@@ -1,0 +1,230 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User transformation configuration and challenge starting details.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Firebase Auth user ID"
+        },
+        "startDate": {
+          "type": "string",
+          "maxLength": 20,
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "Day 1 of the 100-day challenge in YYYY-MM-DD"
+        },
+        "startingWeight": {
+          "type": "number",
+          "description": "Starting bodyweight in kg or lbs"
+        },
+        "targetWeight": {
+          "type": "number",
+          "description": "Target bodyweight by Day 100"
+        },
+        "weightUnit": {
+          "type": "string",
+          "enum": ["kg", "lbs"],
+          "maxLength": 10,
+          "description": "Preferred weight unit"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation server timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update server timestamp"
+        }
+      },
+      "required": ["uid", "startDate", "startingWeight", "targetWeight", "weightUnit", "createdAt", "updatedAt"]
+    },
+    "WorkoutSession": {
+      "title": "WorkoutSession",
+      "description": "A logged workout session for a specific day of the 100-day challenge.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner user ID"
+        },
+        "sessionId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Unique session identifier"
+        },
+        "dayNumber": {
+          "type": "number",
+          "description": "Day 1 to 100 in the transformation challenge"
+        },
+        "sessionNumber": {
+          "type": "number",
+          "description": "Sequential workout session number"
+        },
+        "date": {
+          "type": "string",
+          "maxLength": 20,
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "Workout date YYYY-MM-DD"
+        },
+        "splitId": {
+          "type": "string",
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Identifier for the split day (e.g., pull_a, legs_a)"
+        },
+        "splitName": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "Display name of the split (e.g., MONDAY — PULL A)"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["in_progress", "completed"],
+          "maxLength": 20,
+          "description": "Current status of the workout session"
+        },
+        "totalVolume": {
+          "type": "number",
+          "description": "Total volume lifted in this workout (weight * reps)"
+        },
+        "prCount": {
+          "type": "number",
+          "description": "Number of personal records set in this workout"
+        },
+        "durationSeconds": {
+          "type": "number",
+          "description": "Duration of the workout in seconds"
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Overall session notes"
+        },
+        "exercises": {
+          "type": "array",
+          "description": "List of exercises and their logged sets (max 20 exercises per workout)"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server update timestamp"
+        }
+      },
+      "required": ["uid", "sessionId", "dayNumber", "sessionNumber", "date", "splitId", "splitName", "status", "totalVolume", "prCount", "durationSeconds", "notes", "exercises", "createdAt", "updatedAt"]
+    },
+    "BodyMetricLog": {
+      "title": "BodyMetricLog",
+      "description": "Daily bodyweight, body measurements, nutrition, sleep, steps, and progress photo for a specific day.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner user ID"
+        },
+        "logId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Log document ID (e.g., date YYYY-MM-DD or day_X)"
+        },
+        "dayNumber": {
+          "type": "number",
+          "description": "Challenge Day 1 to 100"
+        },
+        "date": {
+          "type": "string",
+          "maxLength": 20,
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "Date in YYYY-MM-DD"
+        },
+        "bodyweight": {
+          "type": "number",
+          "description": "Daily bodyweight measurement (0 if not recorded)"
+        },
+        "waist": {
+          "type": "number",
+          "description": "Waist circumference in cm (0 if not recorded)"
+        },
+        "chest": {
+          "type": "number",
+          "description": "Chest circumference in cm (0 if not recorded)"
+        },
+        "arm": {
+          "type": "number",
+          "description": "Arm circumference in cm (0 if not recorded)"
+        },
+        "thigh": {
+          "type": "number",
+          "description": "Thigh circumference in cm (0 if not recorded)"
+        },
+        "sleepHours": {
+          "type": "number",
+          "description": "Sleep duration in hours"
+        },
+        "steps": {
+          "type": "number",
+          "description": "Daily step count"
+        },
+        "calories": {
+          "type": "number",
+          "description": "Daily caloric intake in kcal"
+        },
+        "protein": {
+          "type": "number",
+          "description": "Daily protein intake in grams"
+        },
+        "photoDataUrl": {
+          "type": "string",
+          "maxLength": 350000,
+          "description": "Compressed base64 data URL of progress photo or empty string"
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Daily physique or recovery notes"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server update timestamp"
+        }
+      },
+      "required": ["uid", "logId", "dayNumber", "date", "bodyweight", "waist", "chest", "arm", "thigh", "sleepHours", "steps", "calories", "protein", "photoDataUrl", "notes", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User transformation configuration and challenge starting details"
+    },
+    "/users/{userId}/workouts/{sessionId}": {
+      "schema": { "$ref": "#/entities/WorkoutSession" },
+      "description": "Historical and active workout sessions for the user"
+    },
+    "/users/{userId}/metrics/{logId}": {
+      "schema": { "$ref": "#/entities/BodyMetricLog" },
+      "description": "Daily bodyweight, body measurements, sleep, steps, nutrition, and progress photos"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Iron100 — 100-Day Bodybuilding Transformation Tracker",
+  "description": "Precision progressive-overload workout logger, personal record tracker, and 100-day physique transformation analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

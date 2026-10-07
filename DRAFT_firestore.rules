@@ -1,0 +1,179 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 2. Global Hardened Primitives
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // 3. Entity Validation Blueprints
+    function isValidUserProfile(data, userId) {
+      return data.keys().hasAll(['uid', 'startDate', 'startingWeight', 'targetWeight', 'weightUnit', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['uid', 'startDate', 'startingWeight', 'targetWeight', 'weightUnit', 'createdAt', 'updatedAt'])
+        && data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 && data.uid.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.uid == request.auth.uid && data.uid == userId
+        && data.startDate is string && data.startDate.size() >= 10 && data.startDate.size() <= 20 && data.startDate.matches('^\\d{4}-\\d{2}-\\d{2}$')
+        && data.startingWeight is number && data.startingWeight >= 20 && data.startingWeight <= 350
+        && data.targetWeight is number && data.targetWeight >= 20 && data.targetWeight <= 350
+        && data.weightUnit is string && data.weightUnit.size() >= 2 && data.weightUnit.size() <= 10 && (data.weightUnit == 'kg' || data.weightUnit == 'lbs')
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidWorkoutSession(data, userId, sessionId) {
+      return data.keys().hasAll(['uid', 'sessionId', 'dayNumber', 'sessionNumber', 'date', 'splitId', 'splitName', 'status', 'totalVolume', 'prCount', 'durationSeconds', 'notes', 'exercises', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['uid', 'sessionId', 'dayNumber', 'sessionNumber', 'date', 'splitId', 'splitName', 'status', 'totalVolume', 'prCount', 'durationSeconds', 'notes', 'exercises', 'createdAt', 'updatedAt'])
+        && data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 && data.uid.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.uid == request.auth.uid && data.uid == userId
+        && data.sessionId is string && data.sessionId.size() >= 1 && data.sessionId.size() <= 128 && data.sessionId.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.sessionId == sessionId
+        && data.dayNumber is number && data.dayNumber >= 1 && data.dayNumber <= 365
+        && data.sessionNumber is number && data.sessionNumber >= 1 && data.sessionNumber <= 1000
+        && data.date is string && data.date.size() >= 10 && data.date.size() <= 20 && data.date.matches('^\\d{4}-\\d{2}-\\d{2}$')
+        && data.splitId is string && data.splitId.size() >= 1 && data.splitId.size() <= 32 && data.splitId.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.splitName is string && data.splitName.size() >= 1 && data.splitName.size() <= 64
+        && data.status is string && data.status.size() >= 1 && data.status.size() <= 20 && (data.status == 'in_progress' || data.status == 'completed')
+        && data.totalVolume is number && data.totalVolume >= 0 && data.totalVolume <= 1000000
+        && data.prCount is number && data.prCount >= 0 && data.prCount <= 200
+        && data.durationSeconds is number && data.durationSeconds >= 0 && data.durationSeconds <= 86400
+        && data.notes is string && data.notes.size() <= 1000
+        && data.exercises is list && data.exercises.size() <= 20
+        && (data.exercises.size() == 0 || data.exercises[0] is map)
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidBodyMetricLog(data, userId, logId) {
+      return data.keys().hasAll(['uid', 'logId', 'dayNumber', 'date', 'bodyweight', 'waist', 'chest', 'arm', 'thigh', 'sleepHours', 'steps', 'calories', 'protein', 'photoDataUrl', 'notes', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['uid', 'logId', 'dayNumber', 'date', 'bodyweight', 'waist', 'chest', 'arm', 'thigh', 'sleepHours', 'steps', 'calories', 'protein', 'photoDataUrl', 'notes', 'createdAt', 'updatedAt'])
+        && data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 && data.uid.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.uid == request.auth.uid && data.uid == userId
+        && data.logId is string && data.logId.size() >= 1 && data.logId.size() <= 128 && data.logId.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.logId == logId
+        && data.dayNumber is number && data.dayNumber >= 1 && data.dayNumber <= 365
+        && data.date is string && data.date.size() >= 10 && data.date.size() <= 20 && data.date.matches('^\\d{4}-\\d{2}-\\d{2}$')
+        && data.bodyweight is number && data.bodyweight >= 0 && data.bodyweight <= 350
+        && data.waist is number && data.waist >= 0 && data.waist <= 300
+        && data.chest is number && data.chest >= 0 && data.chest <= 300
+        && data.arm is number && data.arm >= 0 && data.arm <= 150
+        && data.thigh is number && data.thigh >= 0 && data.thigh <= 200
+        && data.sleepHours is number && data.sleepHours >= 0 && data.sleepHours <= 24
+        && data.steps is number && data.steps >= 0 && data.steps <= 200000
+        && data.calories is number && data.calories >= 0 && data.calories <= 30000
+        && data.protein is number && data.protein >= 0 && data.protein <= 1000
+        && data.photoDataUrl is string && data.photoDataUrl.size() <= 350000
+        && data.notes is string && data.notes.size() <= 500
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    // 4. Collection Match Blocks
+    match /users/{userId} {
+      allow get: if isOwner(userId) && isValidId(userId);
+      allow list: if isOwner(userId) && existing().uid == request.auth.uid;
+
+      allow create: if isOwner(userId)
+        && isValidId(userId)
+        && isValidUserProfile(incoming(), userId)
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+
+      allow update: if isOwner(userId)
+        && isValidId(userId)
+        && isValidUserProfile(incoming(), userId)
+        && incoming().uid == existing().uid
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly(['startDate', 'startingWeight', 'targetWeight', 'weightUnit', 'updatedAt']);
+
+      allow delete: if false;
+
+      match /workouts/{sessionId} {
+        allow get: if isOwner(userId)
+          && isValidId(userId)
+          && isValidId(sessionId)
+          && exists(/databases/$(database)/documents/users/$(userId));
+
+        allow list: if isOwner(userId)
+          && exists(/databases/$(database)/documents/users/$(userId));
+
+        allow create: if isOwner(userId)
+          && isValidId(userId)
+          && isValidId(sessionId)
+          && isValidWorkoutSession(incoming(), userId, sessionId)
+          && incoming().createdAt == request.time
+          && incoming().updatedAt == request.time
+          && exists(/databases/$(database)/documents/users/$(userId));
+
+        allow update: if isOwner(userId)
+          && isValidId(userId)
+          && isValidId(sessionId)
+          && isValidWorkoutSession(incoming(), userId, sessionId)
+          && incoming().uid == existing().uid
+          && incoming().sessionId == existing().sessionId
+          && incoming().createdAt == existing().createdAt
+          && incoming().updatedAt == request.time
+          && (
+            // Action 1: Update active workout sets, notes, metrics, or mark completed
+            incoming().diff(existing()).affectedKeys().hasOnly(['dayNumber', 'sessionNumber', 'date', 'splitId', 'splitName', 'status', 'totalVolume', 'prCount', 'durationSeconds', 'notes', 'exercises', 'updatedAt'])
+          )
+          && exists(/databases/$(database)/documents/users/$(userId));
+
+        // Never delete workouts — preserve all historical records permanently
+        allow delete: if false;
+      }
+
+      match /metrics/{logId} {
+        allow get: if isOwner(userId)
+          && isValidId(userId)
+          && isValidId(logId)
+          && exists(/databases/$(database)/documents/users/$(userId));
+
+        allow list: if isOwner(userId)
+          && exists(/databases/$(database)/documents/users/$(userId));
+
+        allow create: if isOwner(userId)
+          && isValidId(userId)
+          && isValidId(logId)
+          && isValidBodyMetricLog(incoming(), userId, logId)
+          && incoming().createdAt == request.time
+          && incoming().updatedAt == request.time
+          && exists(/databases/$(database)/documents/users/$(userId));
+
+        allow update: if isOwner(userId)
+          && isValidId(userId)
+          && isValidId(logId)
+          && isValidBodyMetricLog(incoming(), userId, logId)
+          && incoming().uid == existing().uid
+          && incoming().logId == existing().logId
+          && incoming().createdAt == existing().createdAt
+          && incoming().updatedAt == request.time
+          && incoming().diff(existing()).affectedKeys().hasOnly(['dayNumber', 'date', 'bodyweight', 'waist', 'chest', 'arm', 'thigh', 'sleepHours', 'steps', 'calories', 'protein', 'photoDataUrl', 'notes', 'updatedAt'])
+          && exists(/databases/$(database)/documents/users/$(userId));
+
+        allow delete: if false;
+      }
+    }
+  }
+}

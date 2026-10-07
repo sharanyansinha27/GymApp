@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "IRON 100 — 100-Day Bodybuilding Tracker",
+    "slug": "iron100-bodybuilding-tracker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "icon": "./public/pwa-192x192.png",
+    "scheme": "iron100",
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./public/pwa-512x512.png",
+          "resizeMode": "contain",
+          "imageWidth": 200,
+          "backgroundColor": "#090d16"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow IRON 100 to access photos for your transformation progress.",
+          "microphonePermission": false
+        }
+      ]
+    ],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.iron100.transformationtracker"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./public/pwa-192x192.png",
+        "backgroundColor": "#090d16"
+      },
+      "package": "com.iron100.transformationtracker"
+    },
+    "web": {
+      "favicon": "./public/pwa-192x192.png",
+      "bundler": "metro"
+    }
+  }
+}
