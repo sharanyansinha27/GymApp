@@ -24,6 +24,13 @@ import {
   calculateWeeklyPlannedVolume,
   normalizeProgramDays,
 } from '../data/programConfiguration';
+import {
+  getNextOnboardingStep,
+  getOnboardingStepProgress,
+  getPreviousOnboardingStep,
+  ONBOARDING_STEP_COUNT,
+  OnboardingStep,
+} from '../data/programOnboardingFlow';
 import { ExerciseFactModal } from './ExerciseFactModal';
 
 interface ProgramOnboardingProps {
@@ -37,8 +44,6 @@ interface ProgramOnboardingProps {
   ) => Promise<void>;
   onSignOut: () => void;
 }
-
-type OnboardingStep = 'goal' | 'location' | 'program' | 'schedule' | 'exercises' | 'summary';
 
 const WEEKDAYS: UserProgramDay[] = [
   'Monday',
@@ -138,7 +143,7 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
     profile.physiqueFocus || 'balanced_athletic'
   );
   const [availableEquipment, setAvailableEquipment] = useState<string[]>(
-    profile.availableEquipment?.length ? profile.availableEquipment : ['Bodyweight']
+    profile.availableEquipment?.filter((equipment) => equipment !== 'Bodyweight') || []
   );
   const [physiquePriorities, setPhysiquePriorities] = useState<PhysiquePriority[]>(
     profile.physiquePriorities || []
@@ -195,7 +200,7 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
   }, [profile.uid]);
 
   const activeDays = days.filter((day) => !day.isRestDay);
-  const currentStep = ['goal', 'location', 'program', 'schedule', 'exercises'].indexOf(step) + 1;
+  const currentStep = getOnboardingStepProgress(step);
   const selectedDay = days.find((day) => day.dayOfWeek === selectedDayOfWeek) || days[0];
   const recommendationProfile: ExerciseRecommendationProfile | null =
     workoutMode && goal
