@@ -29,6 +29,11 @@ import {
   WorkoutSessionRecord,
   BodyMetricRecord,
   LoggedExercise,
+  FitnessGoal,
+  UserProgramDay,
+  UserProgramRecord,
+  PersonalizationPreferences,
+  WorkoutMode,
 } from './types';
 import {
   getTodayDateStr,
@@ -46,6 +51,7 @@ import { DashboardView } from './components/DashboardView';
 import { WorkoutLoggerView } from './components/WorkoutLoggerView';
 import { TransformationProgressView } from './components/TransformationProgressView';
 import { HistoryComparisonView } from './components/HistoryComparisonView';
+import { ProgramOnboarding } from './components/ProgramOnboarding';
 import { PWAInstallButton, OfflineIndicator } from './components/PWAInstallButton';
 import {
   LayoutDashboard,
@@ -101,11 +107,19 @@ export default function App() {
     const unsub = onAuthStateChanged(auth, async (currUser) => {
       setUser(currUser);
       setAuthReady(true);
+      setProfile(null);
+      setWorkouts([]);
+      setMetrics([]);
+      setSelectedDayNumber(1);
+      setIsSaving(false);
+      setFirestoreError(null);
 
       if (currUser) {
         const userRef = doc(db, 'users', currUser.uid);
         try {
           const snap = await getDoc(userRef);
+          if (auth.currentUser?.uid !== currUser.uid) return;
+
           if (!snap.exists()) {
             const today = getTodayDateStr();
             const initialProfile = {
@@ -114,19 +128,20 @@ export default function App() {
               startingWeight: 80,
               targetWeight: 75,
               weightUnit: 'kg' as const,
+              ...(currUser.displayName ? { name: currUser.displayName } : {}),
+              ...(currUser.email ? { email: currUser.email } : {}),
+              ...(currUser.photoURL ? { photoURL: currUser.photoURL } : {}),
+              onboardingCompleted: false,
               createdAt: serverTimestamp(),
               updatedAt: serverTimestamp(),
             };
             await setDoc(userRef, initialProfile);
           }
         } catch (err) {
-          reportFirestoreError(err, OperationType.GET, `users/${currUser.uid}`);
+          if (auth.currentUser?.uid === currUser.uid) {
+            reportFirestoreError(err, OperationType.GET, `users/${currUser.uid}`);
+          }
         }
-      } else {
-        setProfile(null);
-        setWorkouts([]);
-        setMetrics([]);
-        setFirestoreError(null);
       }
     });
     return () => unsub();
@@ -139,21 +154,32 @@ export default function App() {
     const userPath = `users/${user.uid}`;
     const workoutsPath = `users/${user.uid}/workouts`;
     const metricsPath = `users/${user.uid}/metrics`;
+    const isCurrentUser = () => auth.currentUser?.uid === user.uid;
 
     const unsubProfile = onSnapshot(
       doc(db, 'users', user.uid),
       (snap) => {
+        if (!isCurrentUser()) return;
+
         if (snap.exists()) {
           const data = snap.data() as UserProfileRecord;
+          if (data.uid !== user.uid) return;
+
           setProfile(data);
           const todayDay = getChallengeDayFromDate(
             data.startDate,
             getTodayDateStr()
           );
           setSelectedDayNumber(todayDay);
+        } else {
+          setProfile(null);
         }
       },
-      (err) => reportFirestoreError(err, OperationType.GET, userPath)
+      (err) => {
+        if (isCurrentUser()) {
+          reportFirestoreError(err, OperationType.GET, userPath);
+        }
+      }
     );
 
     const unsubWorkouts = onSnapshot(
@@ -162,12 +188,18 @@ export default function App() {
         where('uid', '==', user.uid)
       ),
       (snap) => {
+        if (!isCurrentUser()) return;
+
         const list: WorkoutSessionRecord[] = [];
         snap.forEach((d: any) => list.push(d.data() as WorkoutSessionRecord));
         setWorkouts(list);
         setFirestoreError(null);
       },
-      (err) => reportFirestoreError(err, OperationType.LIST, workoutsPath)
+      (err) => {
+        if (isCurrentUser()) {
+          reportFirestoreError(err, OperationType.LIST, workoutsPath);
+        }
+      }
     );
 
     const unsubMetrics = onSnapshot(
@@ -176,12 +208,18 @@ export default function App() {
         where('uid', '==', user.uid)
       ),
       (snap) => {
+        if (!isCurrentUser()) return;
+
         const list: BodyMetricRecord[] = [];
         snap.forEach((d: any) => list.push(d.data() as BodyMetricRecord));
         setMetrics(list);
         setFirestoreError(null);
       },
-      (err) => reportFirestoreError(err, OperationType.LIST, metricsPath)
+      (err) => {
+        if (isCurrentUser()) {
+          reportFirestoreError(err, OperationType.LIST, metricsPath);
+        }
+      }
     );
 
     return () => {
@@ -250,8 +288,76 @@ export default function App() {
     }
   };
 
+  const handleSaveProgramDraft = async (
+    goal: FitnessGoal,
+    workoutMode: WorkoutMode,
+    days: UserProgramDay[]
+  ) => {
+    if (!user || !profile || auth.currentUser?.uid !== user.uid) {
+      throw new Error('Your signed-in account changed. Please sign in again.');
+    }
+
+    const programPath = `users/${user.uid}/programs/current`;
+    const programRef = doc(db, 'users', user.uid, 'programs', 'current');
+    try {
+      const existingProgram = await getDoc(programRef);
+      if (auth.currentUser?.uid !== user.uid) {
+        throw new Error('Your signed-in account changed. Please sign in again.');
+      }
+
+      const program: UserProgramRecord = {
+        uid: user.uid,
+        programId: 'current',
+        goal,
+        workoutMode,
+        status: 'draft',
+        days,
+        createdAt: existingProgram.exists()
+          ? existingProgram.data()?.createdAt ?? serverTimestamp()
+          : serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      };
+      await setDoc(programRef, program);
+      await updateDoc(doc(db, 'users', user.uid), {
+        goal,
+        workoutMode,
+        onboardingCompleted: false,
+        programId: 'current',
+        updatedAt: serverTimestamp(),
+      });
+    } catch (err) {
+      reportFirestoreError(err, OperationType.WRITE, programPath);
+      throw err;
+    }
+  };
+
+  const handleSaveOnboardingPreferences = async (
+    preferences: PersonalizationPreferences
+  ) => {
+    if (!user || !profile || auth.currentUser?.uid !== user.uid) {
+      throw new Error('Your signed-in account changed. Please sign in again.');
+    }
+
+    try {
+      await updateDoc(doc(db, 'users', user.uid), {
+        goal: preferences.goal,
+        ...(preferences.workoutMode ? { workoutMode: preferences.workoutMode } : {}),
+        physiqueFocus: preferences.physiqueFocus,
+        availableEquipment: preferences.availableEquipment,
+        physiquePriorities: preferences.physiquePriorities,
+        onboardingCompleted: false,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (err) {
+      reportFirestoreError(err, OperationType.UPDATE, `users/${user.uid}`);
+      throw err;
+    }
+  };
+
   const handleSaveWorkoutSession = async (updated: WorkoutSessionRecord) => {
-    if (!user) return;
+    if (!user || updated.uid !== user.uid) {
+      throw new Error('Workout session does not belong to the current user.');
+    }
     setIsSaving(true);
     const sessionPath = `users/${user.uid}/workouts/${updated.sessionId}`;
     const docRef = doc(db, 'users', user.uid, 'workouts', updated.sessionId);
@@ -322,7 +428,9 @@ export default function App() {
   };
 
   const handleSaveMetric = async (metric: BodyMetricRecord) => {
-    if (!user) return;
+    if (!user || metric.uid !== user.uid) {
+      throw new Error('Body metric does not belong to the current user.');
+    }
     const logPath = `users/${user.uid}/metrics/${metric.logId}`;
     const docRef = doc(db, 'users', user.uid, 'metrics', metric.logId);
 
@@ -528,6 +636,17 @@ export default function App() {
     );
   }
 
+  if (profile?.onboardingCompleted === false) {
+    return (
+      <ProgramOnboarding
+        profile={profile}
+        onSavePreferences={handleSaveOnboardingPreferences}
+        onSaveDraft={handleSaveProgramDraft}
+        onSignOut={() => void signOut(auth)}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#090D16] text-slate-100">
       {/* 3-Zone Top Navigation Bar Contract */}
@@ -650,6 +769,7 @@ export default function App() {
           />
         ) : activeTab === 'workout' ? (
           <WorkoutLoggerView
+            key={user.uid}
             profile={profile}
             activeDayNumber={selectedDayNumber}
             onSelectDayNumber={setSelectedDayNumber}

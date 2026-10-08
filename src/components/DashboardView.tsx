@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   WorkoutSessionRecord,
   UserProfileRecord,
@@ -27,6 +27,16 @@ import {
   Plus,
 } from 'lucide-react';
 
+// TEMP DASHBOARD ANIMATION DEMO: Replace these targets with Firebase-backed values when ready.
+const DASHBOARD_ANIMATION_DEMO = {
+  workouts: 42,
+  volume: 8250,
+  volumeUnit: 'kg',
+  day: 47,
+  progress: 47,
+} as const;
+const DASHBOARD_ANIMATION_DURATION_MS = 1600;
+
 interface DashboardViewProps {
   profile: UserProfileRecord;
   workouts: WorkoutSessionRecord[];
@@ -50,6 +60,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onQuickLogWeight,
   onUpdateProfile,
 }) => {
+  const [animatedDashboardValues, setAnimatedDashboardValues] = useState({
+    workouts: 0,
+    volume: 0,
+    day: 0,
+    progress: 0,
+  });
   const [quickWeightInput, setQuickWeightInput] = useState<string>('');
   const [savingWeight, setSavingWeight] = useState(false);
   const [showProfileEdit, setShowProfileEdit] = useState(false);
@@ -58,14 +74,39 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [editTargetWeight, setEditTargetWeight] = useState(String(profile.targetWeight));
   const [editUnit, setEditUnit] = useState<'kg' | 'lbs'>(profile.weightUnit);
 
+  // TEMP DEMO: Animate all dashboard targets together with a shared ease-out duration.
+  useEffect(() => {
+    let frameId = 0;
+    let startTime: number | null = null;
+
+    const animateDashboardValues = (timestamp: number) => {
+      if (startTime === null) startTime = timestamp;
+      const progress = Math.min(
+        (timestamp - startTime) / DASHBOARD_ANIMATION_DURATION_MS,
+        1
+      );
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+
+      setAnimatedDashboardValues({
+        workouts: Math.round(DASHBOARD_ANIMATION_DEMO.workouts * easedProgress),
+        volume: Math.round(DASHBOARD_ANIMATION_DEMO.volume * easedProgress),
+        day: Math.round(DASHBOARD_ANIMATION_DEMO.day * easedProgress),
+        progress: DASHBOARD_ANIMATION_DEMO.progress * easedProgress,
+      });
+
+      if (progress < 1) {
+        frameId = window.requestAnimationFrame(animateDashboardValues);
+      }
+    };
+
+    frameId = window.requestAnimationFrame(animateDashboardValues);
+    return () => window.cancelAnimationFrame(frameId);
+  }, []);
+
   const selectedDate = getDateForChallengeDay(profile.startDate, selectedDayNumber);
   const selectedSplit = getSplitForDate(selectedDate);
   const selectedDaySession = workouts.find((w) => w.dayNumber === selectedDayNumber);
 
-  const completedWorkouts = workouts.filter((w) => w.status === 'completed');
-  const totalVolumeAllTime = Math.round(
-    workouts.reduce((sum, w) => sum + (w.totalVolume || 0), 0)
-  );
   const totalPRsAllTime = workouts.reduce((sum, w) => sum + (w.prCount || 0), 0);
   const prSummaryMap = computeAllExercisePRs(workouts);
   const uniqueExercisesWithPRs = Object.keys(prSummaryMap).length;
@@ -151,7 +192,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div>
             <div className="flex items-center gap-2 text-xs text-slate-400 mb-1">
               <span className="font-mono tabular-nums text-emerald-400 font-semibold">
-                DAY {selectedDayNumber} / 100
+                DAY {animatedDashboardValues.day} / 100
               </span>
               <span aria-hidden="true">·</span>
               <span>Week {Math.ceil(selectedDayNumber / 7)} of 15</span>
@@ -262,7 +303,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div className="flex items-center justify-between text-xs">
             <span className="text-slate-400">
               100-Day Transformation Timeline ·{' '}
-              <strong className="text-white font-mono tabular-nums">{currentChallengeDay}%</strong>{' '}
+              <strong className="text-white font-mono tabular-nums">
+                {Math.round(animatedDashboardValues.progress)}%
+              </strong>{' '}
               Elapsed
             </span>
             <div className="flex items-center gap-3 text-slate-400">
@@ -290,8 +333,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           {/* Smooth 100-Day Progress Bar */}
           <div className="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
             <div
-              className="h-full bg-emerald-500 transition-transform duration-200 origin-left"
-              style={{ transform: `scaleX(${Math.min(1, Math.max(0.01, selectedDayNumber / 100))})` }}
+              className="h-full bg-emerald-500 origin-left"
+              style={{ transform: `scaleX(${animatedDashboardValues.progress / 100})` }}
             />
           </div>
 
@@ -343,7 +386,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
           <div className="mt-2 text-xs text-slate-400 flex items-center gap-1.5">
             <span className="font-mono tabular-nums text-slate-200 font-semibold">
-              {completedWorkouts.length}
+              {animatedDashboardValues.workouts}
             </span>
             <span>total workouts completed</span>
           </div>
@@ -384,8 +427,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <TrendingUp className="w-4 h-4 text-emerald-400" />
           </div>
           <div className="text-2xl sm:text-3xl font-bold font-mono tabular-nums text-white">
-            {totalVolumeAllTime.toLocaleString()}{' '}
-            <span className="text-sm font-normal text-slate-400">{profile.weightUnit}</span>
+            {animatedDashboardValues.volume.toLocaleString()}{' '}
+            <span className="text-sm font-normal text-slate-400">
+              {DASHBOARD_ANIMATION_DEMO.volumeUnit}
+            </span>
           </div>
           <div className="mt-2 text-xs text-slate-400">
             Across {workouts.length} logged sessions

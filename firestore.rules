@@ -30,13 +30,74 @@ service cloud.firestore {
     // 3. Entity Validation Blueprints
     function isValidUserProfile(data, userId) {
       return data.keys().hasAll(['uid', 'startDate', 'startingWeight', 'targetWeight', 'weightUnit', 'createdAt', 'updatedAt'])
-        && data.keys().hasOnly(['uid', 'startDate', 'startingWeight', 'targetWeight', 'weightUnit', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['uid', 'startDate', 'startingWeight', 'targetWeight', 'weightUnit', 'name', 'email', 'photoURL', 'goal', 'workoutMode', 'physiqueFocus', 'availableEquipment', 'physiquePriorities', 'onboardingCompleted', 'programId', 'createdAt', 'updatedAt'])
         && data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 && data.uid.matches('^[a-zA-Z0-9_\\-]+$')
         && data.uid == request.auth.uid && data.uid == userId
         && data.startDate is string && data.startDate.size() >= 10 && data.startDate.size() <= 20 && data.startDate.matches('^\\d{4}-\\d{2}-\\d{2}$')
         && data.startingWeight is number && data.startingWeight >= 20 && data.startingWeight <= 350
         && data.targetWeight is number && data.targetWeight >= 20 && data.targetWeight <= 350
         && data.weightUnit is string && data.weightUnit.size() >= 2 && data.weightUnit.size() <= 10 && (data.weightUnit == 'kg' || data.weightUnit == 'lbs')
+        && (!data.keys().hasAny(['name']) || (data.name is string && data.name.size() <= 120))
+        && (!data.keys().hasAny(['email']) || (data.email is string && data.email.size() <= 254))
+        && (!data.keys().hasAny(['photoURL']) || (data.photoURL is string && data.photoURL.size() <= 2048))
+        && (!data.keys().hasAny(['goal']) || (data.goal is string && data.goal in ['muscle_gain', 'weight_gain', 'fat_loss', 'hypertrophy', 'strength', 'general_fitness', 'body_recomposition']))
+        && (!data.keys().hasAny(['workoutMode']) || (data.workoutMode is string && data.workoutMode in ['gym', 'home']))
+        && (!data.keys().hasAny(['physiqueFocus']) || (data.physiqueFocus is string && data.physiqueFocus in ['aesthetic_physique', 'maximum_muscle_development', 'strength', 'balanced_athletic']))
+        && (!data.keys().hasAny(['availableEquipment']) || (
+          data.availableEquipment is list
+          && data.availableEquipment.size() <= 39
+          && data.availableEquipment.hasOnly([
+            'Ab wheel', 'Ankle strap', 'Assisted pull-up machine', 'Bar or rope attachment',
+            'Barbell', 'Bench', 'Bodyweight', 'Cable machine', 'Chest press machine',
+            'Chest-supported row machine', 'Dip bars', 'Dumbbell', 'Dumbbell or kettlebell',
+            'Dumbbells', 'EZ-bar', 'EZ-bar or dumbbells', 'Flat bench', 'Hack squat machine',
+            'Handle', 'Incline bench', 'Lat pulldown bar', 'Leg extension machine',
+            'Leg press machine', 'Lying leg curl machine', 'Pec deck machine', 'Plates',
+            'Preacher bench', 'Pull-up bar', 'Rack', 'Raised platform',
+            'Reverse pec deck machine', 'Rope attachment', 'Row handle',
+            'Seated calf raise machine', 'Seated leg curl machine', 'Single handle',
+            'Smith machine', 'Standing calf raise machine', 'T-bar row machine'
+          ])
+        ))
+        && (!data.keys().hasAny(['physiquePriorities']) || (
+          data.physiquePriorities is list
+          && data.physiquePriorities.size() <= 6
+          && data.physiquePriorities.hasOnly(['shoulders', 'upper_chest', 'back_v_taper', 'arms', 'legs', 'balanced'])
+        ))
+        && (!data.keys().hasAny(['onboardingCompleted']) || data.onboardingCompleted is bool)
+        && (!data.keys().hasAny(['programId']) || (data.programId is string && isValidId(data.programId)))
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidProgramDay(data, dayOfWeek) {
+      return data is map
+        && data.keys().hasAll(['dayOfWeek', 'dayName', 'isRestDay', 'name', 'bodyParts', 'exercises'])
+        && data.keys().hasOnly(['dayOfWeek', 'dayName', 'isRestDay', 'name', 'bodyParts', 'exercises'])
+        && data.dayOfWeek == dayOfWeek
+        && data.dayName is string
+        && data.isRestDay is bool
+        && data.name is string && data.name.size() <= 64
+        && data.bodyParts is list && data.bodyParts.size() <= 17
+        && data.exercises is list && data.exercises.size() <= 20;
+    }
+
+    function isValidUserProgram(data, userId, programId) {
+      return data.keys().hasAll(['uid', 'programId', 'goal', 'workoutMode', 'status', 'days', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['uid', 'programId', 'goal', 'workoutMode', 'status', 'days', 'createdAt', 'updatedAt'])
+        && data.uid is string && data.uid == request.auth.uid && data.uid == userId
+        && data.programId is string && data.programId == programId && isValidId(programId)
+        && data.goal is string && data.goal in ['muscle_gain', 'weight_gain', 'fat_loss', 'hypertrophy', 'strength', 'general_fitness', 'body_recomposition']
+        && data.workoutMode is string && data.workoutMode in ['gym', 'home']
+        && data.status is string && data.status in ['draft', 'active']
+        && data.days is list && data.days.size() == 7
+        && isValidProgramDay(data.days[0], 1)
+        && isValidProgramDay(data.days[1], 2)
+        && isValidProgramDay(data.days[2], 3)
+        && isValidProgramDay(data.days[3], 4)
+        && isValidProgramDay(data.days[4], 5)
+        && isValidProgramDay(data.days[5], 6)
+        && isValidProgramDay(data.days[6], 7)
         && data.createdAt is timestamp
         && data.updatedAt is timestamp;
     }
@@ -105,18 +166,36 @@ service cloud.firestore {
         && incoming().uid == existing().uid
         && incoming().createdAt == existing().createdAt
         && incoming().updatedAt == request.time
-        && incoming().diff(existing()).affectedKeys().hasOnly(['startDate', 'startingWeight', 'targetWeight', 'weightUnit', 'updatedAt']);
+        && incoming().diff(existing()).affectedKeys().hasOnly(['startDate', 'startingWeight', 'targetWeight', 'weightUnit', 'name', 'email', 'photoURL', 'goal', 'workoutMode', 'physiqueFocus', 'availableEquipment', 'physiquePriorities', 'onboardingCompleted', 'programId', 'updatedAt']);
 
       allow delete: if false;
+
+      match /programs/{programId} {
+        allow get, list: if isOwner(userId) && isValidId(userId);
+
+        allow create: if isOwner(userId)
+          && isValidId(userId)
+          && isValidUserProgram(incoming(), userId, programId)
+          && incoming().createdAt == request.time
+          && incoming().updatedAt == request.time;
+
+        allow update: if isOwner(userId)
+          && isValidId(userId)
+          && isValidUserProgram(incoming(), userId, programId)
+          && incoming().createdAt == existing().createdAt
+          && incoming().updatedAt == request.time
+          && incoming().diff(existing()).affectedKeys().hasOnly(['goal', 'workoutMode', 'status', 'days', 'updatedAt']);
+
+        allow delete: if false;
+      }
 
       match /workouts/{sessionId} {
         allow get: if isOwner(userId)
           && isValidId(userId)
-          && isValidId(sessionId)
-          && exists(/databases/$(database)/documents/users/$(userId));
+          && isValidId(sessionId);
 
         allow list: if isOwner(userId)
-          && exists(/databases/$(database)/documents/users/$(userId));
+          && isValidId(userId);
 
         allow create: if isOwner(userId)
           && isValidId(userId)
@@ -147,11 +226,10 @@ service cloud.firestore {
       match /metrics/{logId} {
         allow get: if isOwner(userId)
           && isValidId(userId)
-          && isValidId(logId)
-          && exists(/databases/$(database)/documents/users/$(userId));
+          && isValidId(logId);
 
         allow list: if isOwner(userId)
-          && exists(/databases/$(database)/documents/users/$(userId));
+          && isValidId(userId);
 
         allow create: if isOwner(userId)
           && isValidId(userId)
@@ -174,6 +252,12 @@ service cloud.firestore {
 
         allow delete: if false;
       }
+
+    }
+
+    match /exercises/{exerciseId} {
+      allow get, list: if isSignedIn() && isValidId(exerciseId);
+      allow create, update, delete: if false;
     }
   }
 }

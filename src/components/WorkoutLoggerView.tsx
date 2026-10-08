@@ -210,9 +210,18 @@ export const WorkoutLoggerView: React.FC<WorkoutLoggerViewProps> = ({
       return;
     }
 
-    if (draftSessionRef.current?.sessionId !== sourceSession.sessionId) {
-      if (draftSessionRef.current && dirtyRef.current) {
-        void saveDraft(draftSessionRef.current).catch(() => undefined);
+    const previousDraft = draftSessionRef.current;
+    if (
+      previousDraft?.sessionId !== sourceSession.sessionId ||
+      previousDraft?.uid !== sourceSession.uid
+    ) {
+      const sameUser = previousDraft?.uid === sourceSession.uid;
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current);
+        saveTimerRef.current = null;
+      }
+      if (previousDraft && dirtyRef.current && sameUser) {
+        void saveDraft(previousDraft).catch(() => undefined);
       }
 
       let restoredDraft: WorkoutSessionRecord | null = null;
