@@ -1,4 +1,5 @@
 export type SplitId =
+  | 'custom'
   | 'pull_a'
   | 'legs_a'
   | 'push_a'
@@ -46,6 +47,7 @@ export interface PrescribedExercise {
   maxReps: number;
   targetRir: number;
   restSeconds: number;
+  notes?: string;
   isMajorLift?: boolean;
 }
 
@@ -94,6 +96,8 @@ export interface ProgramExerciseSelection {
   maxReps: number;
   targetRir: number;
   restSeconds: number;
+  order?: number;
+  notes?: string;
 }
 
 export interface UserProgramDay {
@@ -108,6 +112,8 @@ export interface UserProgramDay {
 export interface UserProgramRecord {
   uid: string;
   programId: string;
+  split?: string;
+  version?: number;
   goal: FitnessGoal;
   workoutMode: WorkoutMode;
   status: 'draft' | 'active';

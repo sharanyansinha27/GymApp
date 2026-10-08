@@ -45,18 +45,28 @@ service cloud.firestore {
         && (!data.keys().hasAny(['physiqueFocus']) || (data.physiqueFocus is string && data.physiqueFocus in ['aesthetic_physique', 'maximum_muscle_development', 'strength', 'balanced_athletic']))
         && (!data.keys().hasAny(['availableEquipment']) || (
           data.availableEquipment is list
-          && data.availableEquipment.size() <= 39
+          && data.availableEquipment.size() <= 71
           && data.availableEquipment.hasOnly([
-            'Ab wheel', 'Ankle strap', 'Assisted pull-up machine', 'Bar or rope attachment',
-            'Barbell', 'Bench', 'Bodyweight', 'Cable machine', 'Chest press machine',
-            'Chest-supported row machine', 'Dip bars', 'Dumbbell', 'Dumbbell or kettlebell',
-            'Dumbbells', 'EZ-bar', 'EZ-bar or dumbbells', 'Flat bench', 'Hack squat machine',
-            'Handle', 'Incline bench', 'Lat pulldown bar', 'Leg extension machine',
-            'Leg press machine', 'Lying leg curl machine', 'Pec deck machine', 'Plates',
-            'Preacher bench', 'Pull-up bar', 'Rack', 'Raised platform',
-            'Reverse pec deck machine', 'Rope attachment', 'Row handle',
-            'Seated calf raise machine', 'Seated leg curl machine', 'Single handle',
-            'Smith machine', 'Standing calf raise machine', 'T-bar row machine'
+            '45-degree back extension bench', 'Ab wheel', 'Abdominal crunch machine',
+            'Ankle strap', 'Assisted pull-up machine', 'Bar or rope attachment', 'Barbell',
+            'Belt squat machine', 'Bench', 'Bodyweight', 'Cable machine', 'Captain’s chair',
+            'Chest press machine', 'Chest-supported row machine', 'Close-grip pulldown handle',
+            'Decline bench', 'Dip bars', 'Donkey calf raise machine', 'Dumbbell',
+            'Dumbbell or kettlebell', 'Dumbbells', 'EZ-bar', 'EZ-bar or dumbbells',
+            'Elevated flat bench', 'Flat bench', 'Furniture sliders', 'Hack squat machine',
+            'Handle', 'High row machine', 'Hip abduction machine', 'Incline bench',
+            'Incline chest press machine', 'Landmine attachment', 'Lat pulldown bar',
+            'Lateral raise machine', 'Leg extension machine', 'Leg press machine',
+            'Low row machine', 'Lying leg curl machine', 'Neutral-grip pull-up station',
+            'Neutral-grip pulldown handle', 'Nordic curl anchor', 'Pec deck machine',
+            'Plates', 'Preacher bench', 'Pull-up bar', 'Rack', 'Raised platform',
+            'Resistance Band', 'Reverse hyperextension machine', 'Reverse pec deck machine',
+            'Rope attachment', 'Row handle', 'Seated calf raise machine',
+            'Seated leg curl machine', 'Shoulder press machine', 'Single handle',
+            'Single handles', 'Sissy squat bench', 'Smith machine', 'Stability ball',
+            'Standing calf raise machine', 'Standing leg curl machine', 'Step platform',
+            'Straight bar attachment', 'Suspension trainer', 'T-bar row machine', 'Towel',
+            'Weight plate', 'Weight plates', 'Wrist roller'
           ])
         ))
         && (!data.keys().hasAny(['physiquePriorities']) || (
@@ -84,9 +94,11 @@ service cloud.firestore {
 
     function isValidUserProgram(data, userId, programId) {
       return data.keys().hasAll(['uid', 'programId', 'goal', 'workoutMode', 'status', 'days', 'createdAt', 'updatedAt'])
-        && data.keys().hasOnly(['uid', 'programId', 'goal', 'workoutMode', 'status', 'days', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['uid', 'programId', 'split', 'version', 'goal', 'workoutMode', 'status', 'days', 'createdAt', 'updatedAt'])
         && data.uid is string && data.uid == request.auth.uid && data.uid == userId
         && data.programId is string && data.programId == programId && isValidId(programId)
+        && (!data.keys().hasAny(['split']) || (data.split is string && data.split == 'custom'))
+        && (!data.keys().hasAny(['version']) || (data.version is int && data.version >= 1 && data.version <= 100))
         && data.goal is string && data.goal in ['muscle_gain', 'weight_gain', 'fat_loss', 'hypertrophy', 'strength', 'general_fitness', 'body_recomposition']
         && data.workoutMode is string && data.workoutMode in ['gym', 'home']
         && data.status is string && data.status in ['draft', 'active']
@@ -171,20 +183,25 @@ service cloud.firestore {
       allow delete: if false;
 
       match /programs/{programId} {
-        allow get, list: if isOwner(userId) && isValidId(userId);
+        allow get: if isOwner(userId)
+          && isValidId(userId)
+          && programId == 'current';
+        allow list: if false;
 
         allow create: if isOwner(userId)
           && isValidId(userId)
+          && programId == 'current'
           && isValidUserProgram(incoming(), userId, programId)
           && incoming().createdAt == request.time
           && incoming().updatedAt == request.time;
 
         allow update: if isOwner(userId)
           && isValidId(userId)
+          && programId == 'current'
           && isValidUserProgram(incoming(), userId, programId)
           && incoming().createdAt == existing().createdAt
           && incoming().updatedAt == request.time
-          && incoming().diff(existing()).affectedKeys().hasOnly(['goal', 'workoutMode', 'status', 'days', 'updatedAt']);
+          && incoming().diff(existing()).affectedKeys().hasOnly(['split', 'version', 'goal', 'workoutMode', 'status', 'days', 'updatedAt']);
 
         allow delete: if false;
       }

@@ -4,11 +4,12 @@ import {
   LoggedExercise,
   LoggedSet,
   UserProfileRecord,
+  UserProgramRecord,
 } from '../types';
 import {
-  getSplitForDate,
   getDateForChallengeDay,
 } from '../data/workoutSplit';
+import { getProgramSplitForDate } from '../data/programConfiguration';
 import {
   getPreviousExerciseRecord,
   generateProgressionRecommendation,
@@ -34,6 +35,7 @@ import {
 
 interface WorkoutLoggerViewProps {
   profile: UserProfileRecord;
+  program?: UserProgramRecord | null;
   activeDayNumber: number;
   onSelectDayNumber: (day: number) => void;
   session: WorkoutSessionRecord | null;
@@ -72,6 +74,7 @@ function slugifyExerciseId(name: string, fallbackIndex: number): string {
 
 export const WorkoutLoggerView: React.FC<WorkoutLoggerViewProps> = ({
   profile,
+  program,
   activeDayNumber,
   onSelectDayNumber,
   session: sourceSession,
@@ -356,7 +359,7 @@ export const WorkoutLoggerView: React.FC<WorkoutLoggerViewProps> = ({
   }, [allSessions]);
 
   const dateStr = getDateForChallengeDay(profile.startDate, activeDayNumber);
-  const split = getSplitForDate(dateStr);
+  const split = getProgramSplitForDate(dateStr, program);
 
   if (!session) {
     return (

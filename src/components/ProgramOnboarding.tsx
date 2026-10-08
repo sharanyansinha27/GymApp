@@ -7,9 +7,9 @@ import {
   ExerciseRecommendationProfile,
   FitnessGoal,
   PersonalizationPreferences,
+  ProgramExerciseSelection,
   PhysiqueFocus,
   PhysiquePriority,
-  ProgramExerciseSelection,
   UserProfileRecord,
   UserProgramDay,
   UserProgramRecord,
@@ -20,6 +20,10 @@ import {
   RankedExercise,
   rankExercises,
 } from '../data/exerciseLibrary';
+import {
+  calculateWeeklyPlannedVolume,
+  normalizeProgramDays,
+} from '../data/programConfiguration';
 import { ExerciseFactModal } from './ExerciseFactModal';
 
 interface ProgramOnboardingProps {
@@ -28,12 +32,13 @@ interface ProgramOnboardingProps {
   onSaveDraft: (
     goal: FitnessGoal,
     workoutMode: WorkoutMode,
-    days: UserProgramDay[]
+    days: UserProgramDay[],
+    status?: 'draft' | 'active'
   ) => Promise<void>;
   onSignOut: () => void;
 }
 
-type OnboardingStep = 'goal' | 'location' | 'program' | 'schedule' | 'exercises';
+type OnboardingStep = 'goal' | 'location' | 'program' | 'schedule' | 'exercises' | 'summary';
 
 const WEEKDAYS: UserProgramDay[] = [
   'Monday',
@@ -116,28 +121,6 @@ const normalizeGoal = (value: FitnessGoal | undefined): FitnessGoal | null => {
 const isWorkoutMode = (value: unknown): value is WorkoutMode =>
   value === 'gym' || value === 'home';
 
-const isProgramDay = (value: unknown): value is UserProgramDay => {
-  if (!value || typeof value !== 'object') return false;
-  const day = value as Partial<UserProgramDay>;
-  return (
-    typeof day.dayOfWeek === 'number' &&
-    day.dayOfWeek >= 1 &&
-    day.dayOfWeek <= 7 &&
-    typeof day.dayName === 'string' &&
-    typeof day.isRestDay === 'boolean' &&
-    typeof day.name === 'string' &&
-    Array.isArray(day.bodyParts) &&
-    day.bodyParts.every((part) => typeof part === 'string') &&
-    Array.isArray(day.exercises) &&
-    day.exercises.every(
-      (exercise) =>
-        Boolean(exercise) &&
-        typeof exercise === 'object' &&
-        typeof (exercise as ProgramExerciseSelection).exerciseId === 'string'
-    )
-  );
-};
-
 export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
   profile,
   onSavePreferences,
@@ -180,16 +163,11 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
       .then((snapshot) => {
         if (!isActive || !snapshot.exists()) return;
         const program = snapshot.data() as Partial<UserProgramRecord>;
-        if (
-          program.uid !== profile.uid ||
-          !Array.isArray(program.days) ||
-          program.days.length !== 7 ||
-          !program.days.every(isProgramDay)
-        ) {
+        if (program.uid !== profile.uid) {
           throw new Error('The saved program draft has an invalid format.');
         }
 
-        setDays(program.days);
+        setDays(normalizeProgramDays(program.days));
         if (!profile.goal && isFitnessGoal(program.goal)) {
           setGoal(normalizeGoal(program.goal));
         }
@@ -237,6 +215,7 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
       : [];
   const personalizedRecommendations = recommendations.filter(({ isForYou }) => isForYou);
   const moreRecommendations = recommendations.filter(({ isForYou }) => !isForYou);
+  const weeklyPlannedVolume = calculateWeeklyPlannedVolume(days);
   const equipmentOptions = workoutMode
     ? [...new Set(
         EXERCISE_LIBRARY
@@ -386,10 +365,19 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
             maxReps: exercise.recommendedRepRange.max,
             targetRir: 2,
             restSeconds: exercise.recommendedRestSeconds,
+            order: selectedDay.exercises.length + 1,
+            notes: '',
           },
         ];
+    const orderedExercises = exercises.map((selection, index) => ({
+      ...selection,
+      order: index + 1,
+      notes: selection.notes || '',
+    }));
     const nextDays = days.map((day) =>
-      day.dayOfWeek === selectedDay.dayOfWeek ? { ...day, exercises } : day
+      day.dayOfWeek === selectedDay.dayOfWeek
+        ? { ...day, exercises: orderedExercises }
+        : day
     );
 
     try {
@@ -404,6 +392,71 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
       );
     } finally {
       setPendingExerciseId(null);
+    }
+  };
+
+  const updateExerciseConfiguration = (
+    exerciseId: string,
+    updates: Partial<ProgramExerciseSelection>
+  ) => {
+    setDays((currentDays) =>
+      currentDays.map((day) =>
+        day.dayOfWeek === selectedDayOfWeek
+          ? {
+              ...day,
+              exercises: day.exercises.map((selection) =>
+                selection.exerciseId === exerciseId
+                  ? { ...selection, ...updates }
+                  : selection
+              ),
+            }
+          : day
+      )
+    );
+    setSaved(false);
+  };
+
+  const moveExercise = (exerciseId: string, direction: -1 | 1) => {
+    if (!selectedDay) return;
+    const index = selectedDay.exercises.findIndex(
+      (selection) => selection.exerciseId === exerciseId
+    );
+    const targetIndex = index + direction;
+    if (index < 0 || targetIndex < 0 || targetIndex >= selectedDay.exercises.length) return;
+    const exercises = [...selectedDay.exercises];
+    [exercises[index], exercises[targetIndex]] = [
+      exercises[targetIndex],
+      exercises[index],
+    ];
+    updateDay(selectedDayOfWeek, {
+      exercises: exercises.map((selection, exerciseIndex) => ({
+        ...selection,
+        order: exerciseIndex + 1,
+      })),
+    });
+  };
+
+  const persistConfiguredProgram = async (status: 'draft' | 'active') => {
+    if (!goal || !workoutMode) {
+      setError('Choose a training goal and location before saving your program.');
+      return;
+    }
+    setIsSaving(true);
+    setError(null);
+    try {
+      await onSaveDraft(goal, workoutMode, days, status);
+      setSaved(true);
+      if (status === 'active') {
+        setStep('summary');
+      }
+    } catch (saveError: unknown) {
+      setError(
+        saveError instanceof Error
+          ? `Your configured program could not be saved: ${saveError.message}`
+          : 'Your configured program could not be saved.'
+      );
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -940,28 +993,140 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
                 {selectedDay.exercises.length === 0 ? (
                   <p className="mt-3 text-sm text-slate-400">No exercises selected yet.</p>
                 ) : (
-                  <ul className="mt-3 flex flex-wrap gap-2">
-                    {selectedDay.exercises.map((selection) => {
+                  <ul className="mt-3 space-y-3">
+                    {[...selectedDay.exercises]
+                      .sort((left, right) => (left.order || 0) - (right.order || 0))
+                      .map((selection, index) => {
                       const exercise = EXERCISE_LIBRARY.find(
                         (item) => item.id === selection.exerciseId
                       );
                       if (!exercise) return null;
                       return (
-                        <li
-                          key={selection.exerciseId}
-                          className="flex min-h-[40px] items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-950/30 px-3 text-xs text-emerald-100"
-                        >
-                          <Check className="h-3.5 w-3.5" />
-                          {exercise.name}
-                          <button
-                            type="button"
-                            aria-label={`Remove ${exercise.name}`}
-                            disabled={Boolean(pendingExerciseId)}
-                            onClick={() => void saveExerciseSelection(exercise, true)}
-                            className="ml-1 font-bold text-slate-300 hover:text-white disabled:opacity-50"
-                          >
-                            ×
-                          </button>
+                        <li key={selection.exerciseId} className="rounded-xl border border-slate-700 bg-[#090D16] p-3">
+                          <div className="flex items-center gap-2">
+                            <Check className="h-4 w-4 shrink-0 text-emerald-300" />
+                            <span className="min-w-0 flex-1 text-sm font-semibold text-white">
+                              {index + 1}. {exercise.name}
+                            </span>
+                            <button
+                              type="button"
+                              aria-label={`Move ${exercise.name} up`}
+                              disabled={index === 0}
+                              onClick={() => moveExercise(exercise.id, -1)}
+                              className="min-h-[36px] min-w-[36px] rounded-md border border-slate-700 text-slate-300 disabled:opacity-30"
+                            >
+                              <ChevronUp className="mx-auto h-4 w-4" />
+                            </button>
+                            <button
+                              type="button"
+                              aria-label={`Move ${exercise.name} down`}
+                              disabled={index === selectedDay.exercises.length - 1}
+                              onClick={() => moveExercise(exercise.id, 1)}
+                              className="min-h-[36px] min-w-[36px] rounded-md border border-slate-700 text-slate-300 disabled:opacity-30"
+                            >
+                              <ChevronDown className="mx-auto h-4 w-4" />
+                            </button>
+                            <button
+                              type="button"
+                              aria-label={`Remove ${exercise.name}`}
+                              disabled={Boolean(pendingExerciseId)}
+                              onClick={() => void saveExerciseSelection(exercise, true)}
+                              className="min-h-[36px] min-w-[36px] rounded-md border border-slate-700 font-bold text-slate-300 hover:text-white disabled:opacity-50"
+                            >
+                              ×
+                            </button>
+                          </div>
+                          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-5">
+                            <label className="text-[11px] text-slate-400">
+                              Sets
+                              <input
+                                aria-label={`${exercise.name} sets`}
+                                type="number"
+                                min="1"
+                                max="10"
+                                step="1"
+                                value={selection.targetSets}
+                                onChange={(event) => {
+                                  const value = Number(event.target.value);
+                                  if (value >= 1 && value <= 10) updateExerciseConfiguration(exercise.id, { targetSets: value });
+                                }}
+                                className="mt-1 min-h-[38px] w-full rounded-md border border-slate-700 bg-slate-900 px-2 text-sm text-white"
+                              />
+                            </label>
+                            <label className="text-[11px] text-slate-400">
+                              Min reps
+                              <input
+                                aria-label={`${exercise.name} minimum reps`}
+                                type="number"
+                                min="1"
+                                max="100"
+                                value={selection.minReps}
+                                onChange={(event) => {
+                                  const value = Number(event.target.value);
+                                  if (value >= 1 && value <= 100 && value <= selection.maxReps) {
+                                    updateExerciseConfiguration(exercise.id, { minReps: value });
+                                  }
+                                }}
+                                className="mt-1 min-h-[38px] w-full rounded-md border border-slate-700 bg-slate-900 px-2 text-sm text-white"
+                              />
+                            </label>
+                            <label className="text-[11px] text-slate-400">
+                              Max reps
+                              <input
+                                aria-label={`${exercise.name} maximum reps`}
+                                type="number"
+                                min={selection.minReps}
+                                max="100"
+                                value={selection.maxReps}
+                                onChange={(event) => {
+                                  const value = Number(event.target.value);
+                                  if (value >= selection.minReps && value <= 100) {
+                                    updateExerciseConfiguration(exercise.id, { maxReps: value });
+                                  }
+                                }}
+                                className="mt-1 min-h-[38px] w-full rounded-md border border-slate-700 bg-slate-900 px-2 text-sm text-white"
+                              />
+                            </label>
+                            <label className="text-[11px] text-slate-400">
+                              RIR
+                              <select
+                                aria-label={`${exercise.name} RIR`}
+                                value={selection.targetRir}
+                                onChange={(event) => updateExerciseConfiguration(exercise.id, { targetRir: Number(event.target.value) })}
+                                className="mt-1 min-h-[38px] w-full rounded-md border border-slate-700 bg-slate-900 px-2 text-sm text-white"
+                              >
+                                {[0, 1, 2, 3, 4].map((rir) => <option key={rir} value={rir}>{rir}</option>)}
+                              </select>
+                            </label>
+                            <label className="text-[11px] text-slate-400">
+                              Rest (sec)
+                              <input
+                                aria-label={`${exercise.name} rest seconds`}
+                                type="number"
+                                min="15"
+                                max="600"
+                                step="15"
+                                value={selection.restSeconds}
+                                onChange={(event) => {
+                                  const value = Number(event.target.value);
+                                  if (value >= 15 && value <= 600) updateExerciseConfiguration(exercise.id, { restSeconds: value });
+                                }}
+                                className="mt-1 min-h-[38px] w-full rounded-md border border-slate-700 bg-slate-900 px-2 text-sm text-white"
+                              />
+                            </label>
+                          </div>
+                          <label className="mt-2 block text-[11px] text-slate-400">
+                            Optional note
+                            <input
+                              aria-label={`${exercise.name} note`}
+                              type="text"
+                              maxLength={160}
+                              value={selection.notes || ''}
+                              onChange={(event) => updateExerciseConfiguration(exercise.id, { notes: event.target.value })}
+                              placeholder="Add a personal cue or note"
+                              className="mt-1 min-h-[38px] w-full rounded-md border border-slate-700 bg-slate-900 px-2 text-sm text-white placeholder:text-slate-600"
+                            />
+                          </label>
                         </li>
                       );
                     })}
@@ -1015,18 +1180,134 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
                   Your selected exercise references are saved to your private program.
                 </p>
               )}
-              <div className="flex justify-between gap-3">
+              <div className="flex flex-wrap justify-between gap-3">
                 <button type="button" onClick={() => setStep('schedule')} className="min-h-[44px] px-4 text-sm text-slate-300">
                   <ChevronUp className="mr-1 inline h-4 w-4" />
                   Back to schedule
                 </button>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    disabled={isSaving || isLoadingDraft}
+                    onClick={() => void persistConfiguredProgram('draft')}
+                    className="min-h-[44px] rounded-lg border border-slate-600 px-4 text-sm font-semibold text-white disabled:opacity-50"
+                  >
+                    {isSaving ? 'Saving…' : 'Save draft'}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isSaving || isLoadingDraft}
+                    onClick={() => setStep('summary')}
+                    className="min-h-[44px] rounded-lg bg-emerald-500 px-5 font-semibold text-slate-950 disabled:opacity-50"
+                  >
+                    Review program
+                    <ChevronDown className="ml-1 inline h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {step === 'summary' && (
+            <div className="space-y-5">
+              <div>
+                <h1 className="text-2xl font-bold text-white">Program summary</h1>
+                <p className="mt-2 text-sm text-slate-400">
+                  Review your exercise order and prescriptions before activating this personal program.
+                </p>
+              </div>
+
+              <section className="rounded-xl border border-emerald-500/30 bg-emerald-950/20 p-4">
+                <h2 className="font-semibold text-white">Planned weekly volume</h2>
+                <p className="mt-1 text-xs leading-5 text-slate-400">
+                  Direct planned sets from exercises where each muscle is listed as a primary target. This is a program summary, not an optimal-volume target.
+                </p>
+                {weeklyPlannedVolume.length === 0 ? (
+                  <p className="mt-3 text-sm text-slate-400">No direct planned sets yet.</p>
+                ) : (
+                  <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {weeklyPlannedVolume.map(({ muscle, sets }) => (
+                      <li key={muscle} className="rounded-lg border border-slate-700 bg-slate-900/60 p-2 text-sm">
+                        <span className="font-semibold text-white">{muscle}</span>
+                        <span className="ml-2 text-emerald-200">{sets} direct sets</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+
+              <div className="space-y-3">
+                {activeDays.map((day) => (
+                  <section key={day.dayOfWeek} className="rounded-xl border border-slate-700 bg-slate-900/50 p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h2 className="font-semibold text-white">{day.dayName} — {day.name}</h2>
+                        <p className="mt-1 text-xs text-slate-400">{day.bodyParts.join(' + ')}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedDayOfWeek(day.dayOfWeek);
+                          setSelectedBodyPart(day.bodyParts[0] || '');
+                          setStep('exercises');
+                        }}
+                        className="min-h-[40px] rounded-lg border border-slate-600 px-3 text-xs font-semibold text-slate-200"
+                      >
+                        Edit day
+                      </button>
+                    </div>
+                    {day.exercises.length === 0 ? (
+                      <p className="mt-3 text-sm text-slate-400">No exercises selected.</p>
+                    ) : (
+                      <ol className="mt-3 space-y-2">
+                        {[...day.exercises]
+                          .sort((left, right) => (left.order || 0) - (right.order || 0))
+                          .map((selection, index) => {
+                            const exercise = EXERCISE_LIBRARY.find(({ id }) => id === selection.exerciseId);
+                            if (!exercise) return null;
+                            return (
+                              <li key={selection.exerciseId} className="rounded-lg bg-[#090D16] p-3 text-sm">
+                                <p className="font-semibold text-white">{index + 1}. {exercise.name}</p>
+                                <p className="mt-1 text-xs text-slate-300">
+                                  {selection.targetSets} × {selection.minReps === selection.maxReps
+                                    ? selection.minReps
+                                    : `${selection.minReps}–${selection.maxReps}`} reps
+                                  {' · '}{selection.targetRir} RIR
+                                  {' · '}{selection.restSeconds}s rest
+                                </p>
+                                {selection.notes && (
+                                  <p className="mt-1 text-xs text-slate-400">Note: {selection.notes}</p>
+                                )}
+                              </li>
+                            );
+                          })}
+                      </ol>
+                    )}
+                  </section>
+                ))}
+              </div>
+
+              {error && (
+                <p role="alert" className="rounded-lg border border-rose-500/40 bg-rose-950/30 p-3 text-sm text-rose-200">
+                  {error}
+                </p>
+              )}
+              <div className="flex flex-wrap justify-between gap-3">
                 <button
                   type="button"
-                  onClick={() => setStep('schedule')}
-                  className="min-h-[44px] rounded-lg bg-emerald-500 px-5 font-semibold text-slate-950"
+                  onClick={() => setStep('exercises')}
+                  className="min-h-[44px] px-4 text-sm text-slate-300"
                 >
-                  Continue
-                  <ChevronDown className="ml-1 inline h-4 w-4" />
+                  <ChevronUp className="mr-1 inline h-4 w-4" />
+                  Back to exercises
+                </button>
+                <button
+                  type="button"
+                  disabled={isSaving || isLoadingDraft}
+                  onClick={() => void persistConfiguredProgram('active')}
+                  className="min-h-[44px] rounded-lg bg-emerald-500 px-5 font-semibold text-slate-950 disabled:opacity-50"
+                >
+                  {isSaving ? 'Saving…' : 'Save & continue'}
                 </button>
               </div>
             </div>

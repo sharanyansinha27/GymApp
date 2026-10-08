@@ -3,12 +3,13 @@ import {
   WorkoutSessionRecord,
   UserProfileRecord,
   BodyMetricRecord,
+  UserProgramRecord,
 } from '../types';
 import {
   WEEKLY_SPLIT,
   getDateForChallengeDay,
-  getSplitForDate,
 } from '../data/workoutSplit';
+import { getProgramSplitForDate } from '../data/programConfiguration';
 import {
   calculateBodyweightAnalytics,
   computeAllExercisePRs,
@@ -39,6 +40,7 @@ const DASHBOARD_ANIMATION_DURATION_MS = 1600;
 
 interface DashboardViewProps {
   profile: UserProfileRecord;
+  program?: UserProgramRecord | null;
   workouts: WorkoutSessionRecord[];
   metrics: BodyMetricRecord[];
   currentChallengeDay: number;
@@ -51,6 +53,7 @@ interface DashboardViewProps {
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
   profile,
+  program,
   workouts,
   metrics,
   currentChallengeDay,
@@ -104,7 +107,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   }, []);
 
   const selectedDate = getDateForChallengeDay(profile.startDate, selectedDayNumber);
-  const selectedSplit = getSplitForDate(selectedDate);
+  const selectedSplit = getProgramSplitForDate(selectedDate, program);
+  const weeklySplitOverview =
+    program?.status === 'active'
+      ? Array.from({ length: 7 }, (_, index) =>
+          getProgramSplitForDate(
+            `2024-01-${String(index + 1).padStart(2, '0')}`,
+            program
+          )
+        )
+      : WEEKLY_SPLIT;
   const selectedDaySession = workouts.find((w) => w.dayNumber === selectedDayNumber);
 
   const totalPRsAllTime = workouts.reduce((sum, w) => sum + (w.prCount || 0), 0);
@@ -116,7 +128,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     let streak = 0;
     for (let d = currentChallengeDay; d >= 1; d--) {
       const dateStr = getDateForChallengeDay(profile.startDate, d);
-      const split = getSplitForDate(dateStr);
+      const split = getProgramSplitForDate(dateStr, program);
       if (split.splitId === 'rest') {
         continue; // Rest days preserve streak
       }
@@ -140,7 +152,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const weekDays = Array.from({ length: 7 }, (_, i) => {
     const dNum = Math.min(100, weekStartDay + i);
     const dStr = getDateForChallengeDay(profile.startDate, dNum);
-    const sp = getSplitForDate(dStr);
+    const sp = getProgramSplitForDate(dStr, program);
     const sess = workouts.find((w) => w.dayNumber === dNum || w.date === dStr);
     return {
       dayNumber: dNum,
@@ -644,20 +656,24 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           )}
         </div>
 
-        {/* Complete 7-Day Master Program Split Overview */}
+        {/* Weekly program overview */}
         <div className="rounded-2xl bg-[#111827] border border-slate-800/80 p-5">
           <div className="mb-4">
-            <h2 className="text-base font-bold text-white">Weekly Master Split</h2>
+            <h2 className="text-base font-bold text-white">
+              {program?.status === 'active' ? 'Weekly Program' : 'Weekly Master Split'}
+            </h2>
             <p className="text-xs text-slate-400">
-              Automatically scheduled across all 100 days of your transformation
+              {program?.status === 'active'
+                ? 'Your configured workout days and exercise selections'
+                : 'Automatically scheduled across all 100 days of your transformation'}
             </p>
           </div>
           <div className="divide-y divide-slate-800/80">
-            {WEEKLY_SPLIT.map((sp) => {
-              const isCurrentSplit = sp.splitId === selectedSplit.splitId;
+            {weeklySplitOverview.map((sp) => {
+              const isCurrentSplit = sp.dayOfWeek === selectedSplit.dayOfWeek;
               return (
                 <div
-                  key={sp.splitId}
+                  key={sp.dayOfWeek}
                   className={`py-2.5 first:pt-0 last:pb-0 flex items-center justify-between ${
                     isCurrentSplit ? 'text-white' : 'text-slate-300'
                   }`}

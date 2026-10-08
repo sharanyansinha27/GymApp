@@ -39,9 +39,12 @@ import {
   getTodayDateStr,
   getChallengeDayFromDate,
   getDateForChallengeDay,
-  getSplitForDate,
-  createInitialExercisesForSplit,
 } from './data/workoutSplit';
+import {
+  createInitialExercisesForProgramSplit,
+  getProgramSplitForDate,
+  normalizeUserProgram,
+} from './data/programConfiguration';
 import {
   calculateSessionVolume,
   countSessionPRs,
@@ -73,6 +76,8 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
 
   const [profile, setProfile] = useState<UserProfileRecord | null>(null);
+  const [activeProgram, setActiveProgram] = useState<UserProgramRecord | null>(null);
+  const [isProgramLoaded, setIsProgramLoaded] = useState(false);
   const [workouts, setWorkouts] = useState<WorkoutSessionRecord[]>([]);
   const [metrics, setMetrics] = useState<BodyMetricRecord[]>([]);
   const [selectedDayNumber, setSelectedDayNumber] = useState<number>(1);
@@ -108,6 +113,8 @@ export default function App() {
       setUser(currUser);
       setAuthReady(true);
       setProfile(null);
+      setActiveProgram(null);
+      setIsProgramLoaded(false);
       setWorkouts([]);
       setMetrics([]);
       setSelectedDayNumber(1);
@@ -146,6 +153,36 @@ export default function App() {
     });
     return () => unsub();
   }, []);
+
+  useEffect(() => {
+    if (!authReady) return;
+    if (!user) {
+      setActiveProgram(null);
+      setIsProgramLoaded(true);
+      return;
+    }
+
+    const programPath = `users/${user.uid}/programs/current`;
+    const isCurrentUser = () => auth.currentUser?.uid === user.uid;
+    return onSnapshot(
+      doc(db, 'users', user.uid, 'programs', 'current'),
+      (snapshot) => {
+        if (!isCurrentUser()) return;
+        const program = snapshot.exists()
+          ? normalizeUserProgram(snapshot.data(), user.uid)
+          : null;
+        setActiveProgram(program);
+        setIsProgramLoaded(true);
+      },
+      (err) => {
+        if (isCurrentUser()) {
+          setActiveProgram(null);
+          setIsProgramLoaded(true);
+          reportFirestoreError(err, OperationType.GET, programPath);
+        }
+      }
+    );
+  }, [authReady, user]);
 
   // Attach Firestore Real-Time Listeners once authenticated
   useEffect(() => {
@@ -243,7 +280,7 @@ export default function App() {
     );
     if (existing) return existing;
 
-    const split = getSplitForDate(dateStr);
+    const split = getProgramSplitForDate(dateStr, activeProgram);
 
     const sessionId = `day_${selectedDayNumber}`;
     const prevExercisesMap: Record<string, LoggedExercise> = {};
@@ -259,7 +296,7 @@ export default function App() {
       }
     }
 
-    const exercises = createInitialExercisesForSplit(split, prevExercisesMap);
+    const exercises = createInitialExercisesForProgramSplit(split, prevExercisesMap);
     return {
       uid: user.uid,
       sessionId,
@@ -275,7 +312,7 @@ export default function App() {
       notes: '',
       exercises,
     };
-  }, [profile, user, selectedDayNumber, workouts]);
+  }, [profile, user, selectedDayNumber, workouts, activeProgram]);
 
   const handleSignIn = async () => {
     setAuthError(null);
@@ -291,7 +328,8 @@ export default function App() {
   const handleSaveProgramDraft = async (
     goal: FitnessGoal,
     workoutMode: WorkoutMode,
-    days: UserProgramDay[]
+    days: UserProgramDay[],
+    status: 'draft' | 'active' = 'draft'
   ) => {
     if (!user || !profile || auth.currentUser?.uid !== user.uid) {
       throw new Error('Your signed-in account changed. Please sign in again.');
@@ -308,9 +346,11 @@ export default function App() {
       const program: UserProgramRecord = {
         uid: user.uid,
         programId: 'current',
+        split: 'custom',
+        version: 1,
         goal,
         workoutMode,
-        status: 'draft',
+        status,
         days,
         createdAt: existingProgram.exists()
           ? existingProgram.data()?.createdAt ?? serverTimestamp()
@@ -321,7 +361,7 @@ export default function App() {
       await updateDoc(doc(db, 'users', user.uid), {
         goal,
         workoutMode,
-        onboardingCompleted: false,
+        onboardingCompleted: status === 'active',
         programId: 'current',
         updatedAt: serverTimestamp(),
       });
@@ -748,13 +788,14 @@ export default function App() {
 
       {/* Main Content Container */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 pt-5">
-        {!profile ? (
+        {!profile || !isProgramLoaded ? (
           <div className="p-8 rounded-2xl bg-[#111827] border border-slate-800 text-center text-xs text-slate-400 font-mono">
-            Loading your 100-day transformation profile...
+            Loading your 100-day transformation profile and program...
           </div>
         ) : activeTab === 'dashboard' ? (
           <DashboardView
             profile={profile}
+            program={activeProgram}
             workouts={workouts}
             metrics={metrics}
             currentChallengeDay={currentChallengeDay}
@@ -771,6 +812,7 @@ export default function App() {
           <WorkoutLoggerView
             key={user.uid}
             profile={profile}
+            program={activeProgram}
             activeDayNumber={selectedDayNumber}
             onSelectDayNumber={setSelectedDayNumber}
             session={activeDaySession}
