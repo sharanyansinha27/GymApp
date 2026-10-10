@@ -1,0 +1,1485 @@
+{
+  "packId": "iron100-back-v1",
+  "version": "1.0.0",
+  "status": "research-reviewed candidate seed; requires merge with existing exercise library and project schema",
+  "uiPrinciples": [
+    "Keep UI names simple",
+    "Do not show scientific evidence tiers on exercise cards",
+    "Nerd Fact stays short and plain",
+    "Keep source links available in Nerd Fact modal",
+    "FOR YOU affects ranking only, never exercise eligibility"
+  ],
+  "currentVisibleCategories": [
+    "Back",
+    "Lats",
+    "Upper Back"
+  ],
+  "internalTargets": {
+    "latissimus_dorsi": {
+      "simpleName": "Lats",
+      "visibleTags": [
+        "Lats",
+        "Back"
+      ],
+      "role": "Primary back-width target",
+      "notes": [
+        "Do not treat upper/lower lats as fully separate user-facing muscles.",
+        "Exercise setup can change emphasis, but no included evidence proves reliable isolation of upper versus lower lat regions."
+      ]
+    },
+    "teres_major": {
+      "simpleName": "Teres major (internal only)",
+      "visibleTags": [
+        "Lats",
+        "Back"
+      ],
+      "role": "Usually a secondary target on pulls",
+      "notes": [
+        "Keep as a secondary-target field; do not need a separate UI selector in v1."
+      ]
+    },
+    "trapezius_upper": {
+      "simpleName": "Upper traps (internal only)",
+      "visibleTags": [
+        "Upper Back",
+        "Back"
+      ],
+      "role": "Shrug target",
+      "notes": [
+        "Shrug variants are strong practical candidates; no proof that one tool universally wins for hypertrophy."
+      ]
+    },
+    "trapezius_middle": {
+      "simpleName": "Middle traps (internal only)",
+      "visibleTags": [
+        "Upper Back",
+        "Back"
+      ],
+      "role": "Upper-back row target",
+      "notes": [
+        "Train with rows; avoid a claim of perfect isolation from rhomboids."
+      ]
+    },
+    "trapezius_lower": {
+      "simpleName": "Lower traps (internal only)",
+      "visibleTags": [
+        "Upper Back",
+        "Back"
+      ],
+      "role": "Targeted accessory focus",
+      "notes": [
+        "Prone/cable Y raises, prone rows and prone cobra variants have acute EMG support; direct hypertrophy superiority is not established."
+      ]
+    },
+    "rhomboids": {
+      "simpleName": "Rhomboids (internal only)",
+      "visibleTags": [
+        "Upper Back",
+        "Back"
+      ],
+      "role": "Overlapping upper-back row target",
+      "notes": [
+        "Co-train with middle traps; do not claim exact isolation."
+      ]
+    },
+    "erector_spinae": {
+      "simpleName": "Lower-back muscles (internal only)",
+      "visibleTags": [
+        "Back"
+      ],
+      "role": "Trunk extension and stabilization",
+      "notes": [
+        "Back extension and hip-hinge patterns have different demands; do not treat RDL/deadlift as erector isolation."
+      ]
+    },
+    "rear_deltoid": {
+      "simpleName": "Rear shoulders (secondary internal target)",
+      "visibleTags": [
+        "Upper Back",
+        "Back"
+      ],
+      "role": "Primary target in reverse-fly movements; secondary in rows",
+      "notes": [
+        "Keep primary/secondary target tags accurate to the exercise."
+      ]
+    },
+    "elbow_flexors": {
+      "simpleName": "Arms (secondary internal target)",
+      "visibleTags": [
+        "Back",
+        "Lats",
+        "Upper Back"
+      ],
+      "role": "Secondary target in most pulling exercises",
+      "notes": [
+        "Do not count pulling sets as full direct biceps sets without the app's planned volume model."
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "lat-emg-review-2026",
+      "title": "Electromyographic Analysis of Latissimus Dorsi Activation During Common Resistance Training Exercises: A Narrative Review",
+      "year": 2026,
+      "pmid": "42647355",
+      "doi": "10.3390/jfmk11030315",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42647355/",
+      "type": "narrative review of acute EMG studies",
+      "sample_summary": "23 eligible studies reviewed",
+      "supports": [
+        "anterior bar path in lat pulldown most consistently associated with greater lat EMG in included evidence",
+        "grip width findings inconsistent",
+        "narrower seated-row grip and lower shoulder-abduction angle each supported independently in separate studies",
+        "pull-up grips broadly similar in available evidence",
+        "pullover did not selectively favor lats in available evidence"
+      ],
+      "limitations": [
+        "EMG is acute muscle activation, not longitudinal hypertrophy",
+        "findings are tentative; some comparisons come from small studies"
+      ]
+    },
+    {
+      "id": "pulldown-grip-2014",
+      "title": "Effects of grip width on muscle strength and activation in the lat pull-down",
+      "year": 2014,
+      "pmid": "24662157",
+      "doi": "10.1097/JSC.0000000000000232",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/24662157/",
+      "type": "acute EMG/load comparison",
+      "sample_summary": "15 men performed 6RM pulldowns with three pronated grip widths",
+      "supports": [
+        "no significant lat EMG difference among tested grip widths",
+        "narrow/medium grip allowed slightly more 6RM load than wide grip in this sample"
+      ],
+      "limitations": [
+        "small male sample",
+        "acute EMG and performance test, not long-term growth"
+      ]
+    },
+    {
+      "id": "pullup-variants-2017",
+      "title": "Electromyographical Comparison of a Traditional, Suspension Device, and Towel Pull-Up",
+      "year": 2017,
+      "pmid": "28828073",
+      "doi": "10.1515/hukin-2017-0068",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/28828073/",
+      "type": "acute EMG comparison",
+      "sample_summary": "15 resistance-trained adults",
+      "supports": [
+        "no significant lat EMG differences between the three tested pull-up variants"
+      ],
+      "limitations": [
+        "small sample",
+        "three specific variants only",
+        "not a hypertrophy trial"
+      ]
+    },
+    {
+      "id": "rowing-biomechanics-2009",
+      "title": "Comparison of different rowing exercises: trunk muscle activation and lumbar spine motion, load, and stiffness",
+      "year": 2009,
+      "pmid": "19197209",
+      "doi": "10.1519/JSC.0b013e3181942019",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/19197209/",
+      "type": "acute EMG and biomechanical comparison",
+      "sample_summary": "7 healthy men; inverted row, bent-over row, and one-arm cable row",
+      "supports": [
+        "inverted row had high measured lat/upper-back activation in tested conditions and lower lumbar spine load",
+        "bent-over row created the greatest lumbar spine load among the three tested movements"
+      ],
+      "limitations": [
+        "very small sample",
+        "only three rowing variations",
+        "acute loading/EMG, not hypertrophy"
+      ]
+    },
+    {
+      "id": "trap-emg-2003",
+      "title": "Surface electromyographic analysis of exercises for the trapezius and serratus anterior muscles",
+      "year": 2003,
+      "pmid": "12774999",
+      "doi": "10.2519/jospt.2003.33.5.247",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12774999/",
+      "type": "acute EMG comparison",
+      "sample_summary": "30 healthy adults; 10 exercises",
+      "supports": [
+        "unilateral shrug produced greatest upper-trapezius EMG among tested exercises",
+        "prone overhead arm raise produced greatest lower-trapezius EMG among tested exercises"
+      ],
+      "limitations": [
+        "acute EMG only",
+        "not a long-term hypertrophy comparison",
+        "highest EMG among the tested set does not prove universal superiority"
+      ]
+    },
+    {
+      "id": "lower-trap-emg-2011",
+      "title": "Selective recruitment of the lower fibers of the trapezius muscle",
+      "year": 2011,
+      "pmid": "21144767",
+      "doi": "10.1016/j.jelekin.2010.11.006",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/21144767/",
+      "type": "acute EMG comparison",
+      "sample_summary": "18 healthy adults; five isometric exercises",
+      "supports": [
+        "prone row and modified prone cobra performed well for lower-trap recruitment while limiting upper/middle trap activity in tested conditions"
+      ],
+      "limitations": [
+        "acute isometric exercises",
+        "small sample",
+        "rehab/activation evidence rather than hypertrophy evidence"
+      ]
+    },
+    {
+      "id": "rhomboid-middle-trap-emg-2016",
+      "title": "Shoulder Retractor Strengthening Exercise to Minimize Rhomboid Muscle Activity and Subacromial Impingement",
+      "year": 2016,
+      "pmid": "27504044",
+      "doi": null,
+      "url": "https://pubmed.ncbi.nlm.nih.gov/27504044/",
+      "type": "fine-wire acute EMG comparison",
+      "sample_summary": "12 healthy participants; four arm/shoulder positions",
+      "supports": [
+        "rowing position altered relative middle-trapezius/rhomboid activity",
+        "supports avoiding claims of exact rhomboid isolation from generic rows"
+      ],
+      "limitations": [
+        "acute activation ratio only",
+        "not a hypertrophy trial"
+      ]
+    },
+    {
+      "id": "roman-chair-strength-2003",
+      "title": "Effect of Roman chair exercise training on the development of lumbar extension strength",
+      "year": 2003,
+      "pmid": "12741878",
+      "doi": "10.1519/1533-4287(2003)017<0356:eorcet>2.0.co;2",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12741878/",
+      "type": "12-week controlled training trial",
+      "sample_summary": "15 healthy volunteers randomized to Roman-chair training or control",
+      "supports": [
+        "a loaded back-extension exercise can be progressively trained"
+      ],
+      "limitations": [
+        "no statistically significant increase in measured peak isometric lumbar extension torque versus control",
+        "did not measure hypertrophy"
+      ]
+    },
+    {
+      "id": "roman-chair-endurance-2002",
+      "title": "Back extension endurance and strength: the effect of variable-angle roman chair exercise training",
+      "year": 2002,
+      "pmid": "12195070",
+      "doi": "10.1097/00007632-200208150-00016",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12195070/",
+      "type": "8-week randomized controlled trial",
+      "sample_summary": "36 healthy volunteers randomized to Roman-chair exercise or control",
+      "supports": [
+        "progressive Roman-chair extension improved back-extension endurance in this trial"
+      ],
+      "limitations": [
+        "isometric extension strength did not significantly increase",
+        "not a hypertrophy trial"
+      ]
+    },
+    {
+      "id": "acsm-rt-2026",
+      "title": "American College of Sports Medicine Position Stand: Resistance Training Prescription for Muscle Function, Hypertrophy, and Physical Performance in Healthy Adults: An Overview of Reviews",
+      "year": 2026,
+      "pmid": "41843416",
+      "doi": "10.1249/MSS.0000000000003897",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41843416/",
+      "type": "overview of systematic reviews",
+      "sample_summary": "137 systematic reviews, more than 30,000 participants",
+      "supports": [
+        "progressive resistance training improves muscle size and strength",
+        "higher weekly volume is generally associated with greater hypertrophy",
+        "many specific prescription variables show inconsistent effects"
+      ],
+      "limitations": [
+        "not back-exercise-specific",
+        "does not identify a universally best back exercise"
+      ]
+    },
+    {
+      "id": "exercise-variation-review-2022",
+      "title": "Does Varying Resistance Exercises Promote Superior Muscle Hypertrophy and Strength Gains? A Systematic Review",
+      "year": 2022,
+      "pmid": "35438660",
+      "doi": "10.1519/JSC.0000000000004258",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/35438660/",
+      "type": "systematic review",
+      "sample_summary": "8 studies, N=241; studies included young men",
+      "supports": [
+        "systematic exercise variation may influence regional adaptation and strength",
+        "excessive/random variation may be counterproductive"
+      ],
+      "limitations": [
+        "small evidence base",
+        "not specific to back exercises",
+        "population in included studies limited"
+      ]
+    },
+    {
+      "id": "regional-hypertrophy-2025",
+      "title": "Does Muscle Length Influence Regional Hypertrophy? A Systematic Review and Meta-Analysis",
+      "year": 2025,
+      "pmid": "40570881",
+      "doi": "10.1055/a-2615-4935",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40570881/",
+      "type": "systematic review and meta-analysis",
+      "sample_summary": "12 studies in young adults",
+      "supports": [
+        "regional hypertrophy differences between the tested shorter/longer mean muscle-length conditions were generally trivial"
+      ],
+      "limitations": [
+        "not back-specific",
+        "does not rule out every possible regional training effect"
+      ]
+    }
+  ],
+  "exercises": [
+    {
+      "id": "lat-pulldown",
+      "name": "Lat Pulldown",
+      "visibleTags": [
+        "Back",
+        "Lats"
+      ],
+      "primaryTargets": [
+        "latissimus_dorsi"
+      ],
+      "secondaryTargets": [
+        "teres_major",
+        "elbow_flexors",
+        "trapezius_middle",
+        "trapezius_lower"
+      ],
+      "pattern": "vertical_pull",
+      "recommendationRole": "core_pick",
+      "candidateFocus": [
+        "lats",
+        "general_back"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "low",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "lat-emg-review-2026",
+        "pulldown-grip-2014"
+      ],
+      "finding": "Front-of-body pulldown has the most consistent lat-EMG support in the recent review; grip width alone is not a reliable universal winner.",
+      "limitations": [
+        "EMG does not establish long-term hypertrophy superiority"
+      ],
+      "nerdFact": "The bar path and how your elbows travel can change which pulling muscles do more of the work. Use a grip you can control and progress rather than chasing an extra-wide grip."
+    },
+    {
+      "id": "pull-up",
+      "name": "Pull-up",
+      "visibleTags": [
+        "Back",
+        "Lats"
+      ],
+      "primaryTargets": [
+        "latissimus_dorsi"
+      ],
+      "secondaryTargets": [
+        "teres_major",
+        "elbow_flexors",
+        "trapezius_middle",
+        "rear_deltoid"
+      ],
+      "pattern": "vertical_pull",
+      "recommendationRole": "core_pick",
+      "candidateFocus": [
+        "lats",
+        "general_back",
+        "strength"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "medium_to_high",
+        "fatigueDemand": "moderate"
+      },
+      "evidenceRefs": [
+        "lat-emg-review-2026",
+        "pullup-variants-2017"
+      ],
+      "finding": "Strong bodyweight vertical pull; tested grip/device variants generally produced similar lat EMG.",
+      "limitations": [
+        "may be too difficult for some users; offer assisted variant"
+      ],
+      "nerdFact": "Pull-ups train your lats along with your arms and other back muscles. Different grips can work well, so choose one you can perform with control."
+    },
+    {
+      "id": "assisted-pull-up",
+      "name": "Assisted Pull-up",
+      "visibleTags": [
+        "Back",
+        "Lats"
+      ],
+      "primaryTargets": [
+        "latissimus_dorsi"
+      ],
+      "secondaryTargets": [
+        "teres_major",
+        "elbow_flexors",
+        "trapezius_middle"
+      ],
+      "pattern": "vertical_pull",
+      "recommendationRole": "core_pick",
+      "candidateFocus": [
+        "lats",
+        "general_back"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "low_to_medium",
+        "fatigueDemand": "moderate"
+      },
+      "evidenceRefs": [
+        "pullup-variants-2017",
+        "lat-emg-review-2026"
+      ],
+      "finding": "Makes the vertical-pull pattern scalable for users who cannot yet complete strict pull-ups.",
+      "limitations": [
+        "assistance step size and machine mechanics vary"
+      ],
+      "nerdFact": "The assistance lets you train the pull-up pattern before you can lift your full bodyweight. Reduce assistance gradually as your strength improves."
+    },
+    {
+      "id": "one-arm-cable-pulldown",
+      "name": "One-Arm Cable Pulldown",
+      "visibleTags": [
+        "Back",
+        "Lats"
+      ],
+      "primaryTargets": [
+        "latissimus_dorsi"
+      ],
+      "secondaryTargets": [
+        "teres_major",
+        "elbow_flexors"
+      ],
+      "pattern": "unilateral_vertical_pull",
+      "recommendationRole": "core_pick_or_strong_alternative",
+      "candidateFocus": [
+        "lats",
+        "general_back"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "low_to_medium",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "lat-emg-review-2026"
+      ],
+      "finding": "Strong practical option with adjustable line of pull and unilateral training flexibility.",
+      "limitations": [
+        "not established as more hypertrophic than bilateral pulldowns"
+      ],
+      "nerdFact": "Using one arm lets you adjust the cable path to a comfortable position. The main benefit is flexibility, not a guarantee of extra growth."
+    },
+    {
+      "id": "seated-cable-row",
+      "name": "Seated Cable Row",
+      "visibleTags": [
+        "Back",
+        "Lats",
+        "Upper Back"
+      ],
+      "primaryTargets": [
+        "latissimus_dorsi",
+        "trapezius_middle",
+        "rhomboids"
+      ],
+      "secondaryTargets": [
+        "teres_major",
+        "rear_deltoid",
+        "elbow_flexors"
+      ],
+      "pattern": "horizontal_pull",
+      "recommendationRole": "core_pick",
+      "candidateFocus": [
+        "lats",
+        "upper_back",
+        "general_back"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "low_to_medium",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "lat-emg-review-2026",
+        "rhomboid-middle-trap-emg-2016"
+      ],
+      "finding": "Versatile row; the arm path and elbow position change emphasis. Separate studies suggest closer grip and lower shoulder-abduction angle can increase lat EMG, but this exact combination has not been validated together.",
+      "limitations": [
+        "multiple muscles work together; avoid claims of isolation"
+      ],
+      "nerdFact": "Rows train several back muscles at once. A repeatable, controlled pulling path makes it easier to track your progress."
+    },
+    {
+      "id": "chest-supported-row",
+      "name": "Chest-Supported Row",
+      "visibleTags": [
+        "Back",
+        "Lats",
+        "Upper Back"
+      ],
+      "primaryTargets": [
+        "trapezius_middle",
+        "rhomboids",
+        "latissimus_dorsi"
+      ],
+      "secondaryTargets": [
+        "teres_major",
+        "rear_deltoid",
+        "elbow_flexors"
+      ],
+      "pattern": "horizontal_pull",
+      "recommendationRole": "core_pick",
+      "candidateFocus": [
+        "upper_back",
+        "lats",
+        "general_back"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "low",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "rowing-biomechanics-2009",
+        "rhomboid-middle-trap-emg-2016"
+      ],
+      "finding": "A stable rowing choice with good progression practicality; recommendation is based mostly on exercise mechanics and programming utility, not proof of unique hypertrophy superiority.",
+      "limitations": [
+        "specific machines and elbow paths differ"
+      ],
+      "nerdFact": "The chest pad supports your torso, so you can focus on the pull without having to hold yourself bent over."
+    },
+    {
+      "id": "machine-row",
+      "name": "Machine Row",
+      "visibleTags": [
+        "Back",
+        "Lats",
+        "Upper Back"
+      ],
+      "primaryTargets": [
+        "latissimus_dorsi",
+        "trapezius_middle",
+        "rhomboids"
+      ],
+      "secondaryTargets": [
+        "teres_major",
+        "rear_deltoid",
+        "elbow_flexors"
+      ],
+      "pattern": "horizontal_pull",
+      "recommendationRole": "core_pick_or_strong_alternative",
+      "candidateFocus": [
+        "upper_back",
+        "lats",
+        "general_back"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "low",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "lat-emg-review-2026",
+        "rhomboid-middle-trap-emg-2016"
+      ],
+      "finding": "Good practical option when the machine's path feels comfortable and can be progressed reliably.",
+      "limitations": [
+        "machine geometry varies; no universal best machine path"
+      ],
+      "nerdFact": "A machine row guides the movement and can make it easier to repeat the same setup from workout to workout."
+    },
+    {
+      "id": "one-arm-cable-row",
+      "name": "One-Arm Cable Row",
+      "visibleTags": [
+        "Back",
+        "Lats",
+        "Upper Back"
+      ],
+      "primaryTargets": [
+        "latissimus_dorsi"
+      ],
+      "secondaryTargets": [
+        "trapezius_middle",
+        "rhomboids",
+        "teres_major",
+        "rear_deltoid",
+        "elbow_flexors"
+      ],
+      "pattern": "unilateral_horizontal_pull",
+      "recommendationRole": "strong_alternative",
+      "candidateFocus": [
+        "lats",
+        "upper_back",
+        "general_back"
+      ],
+      "practicalFit": {
+        "stability": "medium_to_high",
+        "progression": "high",
+        "skillDemand": "low_to_medium",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "rowing-biomechanics-2009",
+        "lat-emg-review-2026"
+      ],
+      "finding": "Flexible row for adjusting the pull path and training one side at a time.",
+      "limitations": [
+        "unilateral work is not inherently superior for hypertrophy"
+      ],
+      "nerdFact": "A one-arm row makes it easy to adjust your elbow path and work each side separately. Pick the version you can control and progress."
+    },
+    {
+      "id": "one-arm-dumbbell-row",
+      "name": "One-Arm Dumbbell Row",
+      "visibleTags": [
+        "Back",
+        "Lats",
+        "Upper Back"
+      ],
+      "primaryTargets": [
+        "latissimus_dorsi"
+      ],
+      "secondaryTargets": [
+        "trapezius_middle",
+        "rhomboids",
+        "teres_major",
+        "rear_deltoid",
+        "elbow_flexors",
+        "erector_spinae"
+      ],
+      "pattern": "unilateral_horizontal_pull",
+      "recommendationRole": "strong_alternative",
+      "candidateFocus": [
+        "lats",
+        "upper_back",
+        "general_back"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "moderate"
+      },
+      "evidenceRefs": [
+        "lat-emg-review-2026"
+      ],
+      "finding": "Useful free-weight row; support and torso position strongly affect the practical demand.",
+      "limitations": [
+        "specific lat/upper-back emphasis depends on execution"
+      ],
+      "nerdFact": "You can change the angle of a one-arm dumbbell row to suit your target. Keep the setup consistent so your progress is easy to compare."
+    },
+    {
+      "id": "t-bar-row",
+      "name": "T-Bar Row",
+      "visibleTags": [
+        "Back",
+        "Lats",
+        "Upper Back"
+      ],
+      "primaryTargets": [
+        "latissimus_dorsi",
+        "trapezius_middle",
+        "rhomboids"
+      ],
+      "secondaryTargets": [
+        "teres_major",
+        "rear_deltoid",
+        "elbow_flexors",
+        "erector_spinae"
+      ],
+      "pattern": "horizontal_pull",
+      "recommendationRole": "strong_alternative",
+      "candidateFocus": [
+        "upper_back",
+        "lats",
+        "general_back",
+        "strength"
+      ],
+      "practicalFit": {
+        "stability": "medium_to_high",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "moderate"
+      },
+      "evidenceRefs": [
+        "lat-emg-review-2026"
+      ],
+      "finding": "A loadable row that can emphasize lats or upper back depending on grip, torso and elbow path.",
+      "limitations": [
+        "supported and unsupported versions differ meaningfully"
+      ],
+      "nerdFact": "T-bar rows can train the lats and upper back together. Your handle and elbow path change which area gets more emphasis."
+    },
+    {
+      "id": "barbell-row",
+      "name": "Barbell Row",
+      "visibleTags": [
+        "Back",
+        "Lats",
+        "Upper Back"
+      ],
+      "primaryTargets": [
+        "latissimus_dorsi",
+        "trapezius_middle",
+        "rhomboids"
+      ],
+      "secondaryTargets": [
+        "teres_major",
+        "rear_deltoid",
+        "elbow_flexors",
+        "erector_spinae"
+      ],
+      "pattern": "horizontal_pull",
+      "recommendationRole": "compound_strength_option",
+      "candidateFocus": [
+        "general_back",
+        "upper_back",
+        "lats",
+        "strength"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "medium_to_high",
+        "fatigueDemand": "moderate_to_high"
+      },
+      "evidenceRefs": [
+        "lat-emg-review-2026",
+        "rowing-biomechanics-2009"
+      ],
+      "finding": "Strong compound row; unsupported torso position increases trunk stabilization and can increase lumbar loading relative to some supported options.",
+      "limitations": [
+        "not automatically the best option for everyone or every target"
+      ],
+      "nerdFact": "Barbell rows train the lats and upper back while your trunk works to hold your position. Supported rows are another good choice when you want less lower-back demand."
+    },
+    {
+      "id": "inverted-row",
+      "name": "Inverted Row",
+      "visibleTags": [
+        "Back",
+        "Lats",
+        "Upper Back"
+      ],
+      "primaryTargets": [
+        "latissimus_dorsi",
+        "trapezius_middle",
+        "rhomboids"
+      ],
+      "secondaryTargets": [
+        "elbow_flexors",
+        "rear_deltoid",
+        "erector_spinae"
+      ],
+      "pattern": "bodyweight_horizontal_pull",
+      "recommendationRole": "strong_alternative",
+      "candidateFocus": [
+        "general_back",
+        "upper_back",
+        "lats"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "medium",
+        "skillDemand": "low_to_medium",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "rowing-biomechanics-2009"
+      ],
+      "finding": "Scalable bodyweight row; one small acute comparison found high lat/upper-back activation and lower lumbar loading among the three tested row variations.",
+      "limitations": [
+        "single small acute study; do not rank universally first from it"
+      ],
+      "nerdFact": "Inverted rows use your bodyweight instead of a cable or barbell load. Raising or lowering the body angle can make the exercise easier or harder."
+    },
+    {
+      "id": "straight-arm-pulldown",
+      "name": "Straight-Arm Pulldown",
+      "visibleTags": [
+        "Back",
+        "Lats"
+      ],
+      "primaryTargets": [
+        "latissimus_dorsi"
+      ],
+      "secondaryTargets": [
+        "teres_major",
+        "trapezius_lower"
+      ],
+      "pattern": "shoulder_extension_accessory",
+      "recommendationRole": "targeted_accessory",
+      "candidateFocus": [
+        "lats"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "medium_to_high",
+        "skillDemand": "low",
+        "fatigueDemand": "low"
+      },
+      "evidenceRefs": [
+        "lat-emg-review-2026"
+      ],
+      "finding": "Reasonable shoulder-extension accessory, but not proven to be the best or an isolating lat hypertrophy movement.",
+      "limitations": [
+        "direct hypertrophy comparisons limited"
+      ],
+      "nerdFact": "This variation lets you pull through the shoulder with relatively little elbow bending. It can complement rows and pulldowns rather than replace them."
+    },
+    {
+      "id": "dumbbell-pullover",
+      "name": "Dumbbell Pullover",
+      "visibleTags": [
+        "Back"
+      ],
+      "primaryTargets": [
+        "pectoralis_major"
+      ],
+      "secondaryTargets": [
+        "latissimus_dorsi",
+        "teres_major"
+      ],
+      "pattern": "shoulder_extension_or_flexion_arc",
+      "recommendationRole": "additional_option",
+      "candidateFocus": [
+        "general_back",
+        "chest"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "medium",
+        "skillDemand": "medium",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "lat-emg-review-2026"
+      ],
+      "finding": "Keep selectable if present, but do not automatically rank as a top lat movement; available EMG evidence did not show selective lat emphasis.",
+      "limitations": [
+        "muscle contribution depends on technique and is not fully resolved by acute EMG"
+      ],
+      "nerdFact": "Pullovers can involve both chest and back muscles. How you perform the movement affects which muscles contribute most."
+    },
+    {
+      "id": "reverse-pec-deck",
+      "name": "Reverse Pec Deck",
+      "visibleTags": [
+        "Back",
+        "Upper Back",
+        "Shoulders"
+      ],
+      "primaryTargets": [
+        "rear_deltoid"
+      ],
+      "secondaryTargets": [
+        "trapezius_middle",
+        "rhomboids"
+      ],
+      "pattern": "horizontal_shoulder_abduction",
+      "recommendationRole": "strong_accessory",
+      "candidateFocus": [
+        "upper_back",
+        "rear_delts"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "low",
+        "fatigueDemand": "low"
+      },
+      "evidenceRefs": [
+        "trap-emg-2003",
+        "rhomboid-middle-trap-emg-2016"
+      ],
+      "finding": "Strong practical rear-delt movement with upper-back contribution; not a substitute for rowing when the priority is overall upper-back mass.",
+      "limitations": [
+        "primary target is rear deltoid, not all upper-back muscles equally"
+      ],
+      "nerdFact": "The reverse pec deck mainly trains the back of your shoulders, with upper-back muscles helping control the movement."
+    },
+    {
+      "id": "reverse-fly",
+      "name": "Reverse Fly",
+      "visibleTags": [
+        "Back",
+        "Upper Back",
+        "Shoulders"
+      ],
+      "primaryTargets": [
+        "rear_deltoid"
+      ],
+      "secondaryTargets": [
+        "trapezius_middle",
+        "rhomboids"
+      ],
+      "pattern": "horizontal_shoulder_abduction",
+      "recommendationRole": "strong_accessory",
+      "candidateFocus": [
+        "upper_back",
+        "rear_delts"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "medium",
+        "skillDemand": "low_to_medium",
+        "fatigueDemand": "low"
+      },
+      "evidenceRefs": [
+        "trap-emg-2003",
+        "lower-trap-emg-2011"
+      ],
+      "finding": "Useful rear-delt-focused accessory; upper-back recruitment varies with execution.",
+      "limitations": [
+        "not equivalent to a heavy row for general upper-back progression"
+      ],
+      "nerdFact": "Reverse flies mainly train the back of your shoulders. They complement rows by adding a different movement pattern."
+    },
+    {
+      "id": "face-pull",
+      "name": "Face Pull",
+      "visibleTags": [
+        "Back",
+        "Upper Back",
+        "Shoulders"
+      ],
+      "primaryTargets": [
+        "rear_deltoid"
+      ],
+      "secondaryTargets": [
+        "trapezius_middle",
+        "trapezius_lower",
+        "rhomboids"
+      ],
+      "pattern": "cable_pull_to_face",
+      "recommendationRole": "accessory",
+      "candidateFocus": [
+        "upper_back",
+        "rear_delts"
+      ],
+      "practicalFit": {
+        "stability": "medium_to_high",
+        "progression": "medium",
+        "skillDemand": "low_to_medium",
+        "fatigueDemand": "low"
+      },
+      "evidenceRefs": [
+        "trap-emg-2003",
+        "rhomboid-middle-trap-emg-2016"
+      ],
+      "finding": "Useful accessory for rear shoulders and scapular musculature; not the default primary mass-building row.",
+      "limitations": [
+        "exercise execution varies; evidence is mainly activation/rehab-oriented"
+      ],
+      "nerdFact": "Face pulls combine a pull with an outward rotation of the arms. They are often used as an accessory for the rear shoulders and upper back."
+    },
+    {
+      "id": "dumbbell-shrug",
+      "name": "Dumbbell Shrug",
+      "visibleTags": [
+        "Back",
+        "Upper Back"
+      ],
+      "primaryTargets": [
+        "trapezius_upper"
+      ],
+      "secondaryTargets": [
+        "levator_scapulae",
+        "forearms"
+      ],
+      "pattern": "scapular_elevation",
+      "recommendationRole": "core_pick_for_upper_traps",
+      "candidateFocus": [
+        "upper_traps",
+        "general_back"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "low",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "trap-emg-2003"
+      ],
+      "finding": "A strong target-specific candidate for upper traps; tested shrug EMG supports the movement pattern, not a unique superiority of dumbbells.",
+      "limitations": [
+        "no direct evidence proving dumbbells outperform barbell/cable/machine shrugs for growth"
+      ],
+      "nerdFact": "Shrugs directly train the upper traps, which help lift your shoulder blades. Dumbbell, barbell, cable and machine versions can all be useful."
+    },
+    {
+      "id": "barbell-shrug",
+      "name": "Barbell Shrug",
+      "visibleTags": [
+        "Back",
+        "Upper Back"
+      ],
+      "primaryTargets": [
+        "trapezius_upper"
+      ],
+      "secondaryTargets": [
+        "levator_scapulae",
+        "forearms"
+      ],
+      "pattern": "scapular_elevation",
+      "recommendationRole": "core_pick_for_upper_traps",
+      "candidateFocus": [
+        "upper_traps",
+        "general_back",
+        "strength"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "low_to_medium",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "trap-emg-2003"
+      ],
+      "finding": "Loadable shrug option; use comfort, available equipment and repeatable progression to distinguish from other shrug versions.",
+      "limitations": [
+        "no universal best implement established"
+      ],
+      "nerdFact": "Barbell shrugs let you progressively load the upper traps. Choose a comfortable setup and keep the movement controlled."
+    },
+    {
+      "id": "machine-shrug",
+      "name": "Machine Shrug",
+      "visibleTags": [
+        "Back",
+        "Upper Back"
+      ],
+      "primaryTargets": [
+        "trapezius_upper"
+      ],
+      "secondaryTargets": [
+        "levator_scapulae"
+      ],
+      "pattern": "scapular_elevation",
+      "recommendationRole": "core_pick_or_strong_alternative_for_upper_traps",
+      "candidateFocus": [
+        "upper_traps"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "low",
+        "fatigueDemand": "low"
+      },
+      "evidenceRefs": [
+        "trap-emg-2003"
+      ],
+      "finding": "A practical stable shrug choice when the machine fits the user and supports smooth progression.",
+      "limitations": [
+        "machine designs vary; comparative hypertrophy evidence limited"
+      ],
+      "nerdFact": "A shrug machine guides the movement and makes it easy to repeat your setup. Its value comes from comfortable, progressive training."
+    },
+    {
+      "id": "cable-shrug",
+      "name": "Cable Shrug",
+      "visibleTags": [
+        "Back",
+        "Upper Back"
+      ],
+      "primaryTargets": [
+        "trapezius_upper"
+      ],
+      "secondaryTargets": [
+        "levator_scapulae",
+        "forearms"
+      ],
+      "pattern": "scapular_elevation",
+      "recommendationRole": "strong_alternative_for_upper_traps",
+      "candidateFocus": [
+        "upper_traps"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "medium_to_high",
+        "skillDemand": "low",
+        "fatigueDemand": "low"
+      },
+      "evidenceRefs": [
+        "trap-emg-2003"
+      ],
+      "finding": "Practical shrug alternative; resistance feel and setup depend on cable position.",
+      "limitations": [
+        "no evidence of universal superiority over other shrug types"
+      ],
+      "nerdFact": "Cable shrugs provide another way to train the upper traps. Pick the setup that feels comfortable and lets you increase the load over time."
+    },
+    {
+      "id": "prone-y-raise",
+      "name": "Prone Y Raise",
+      "visibleTags": [
+        "Back",
+        "Upper Back",
+        "Shoulders"
+      ],
+      "primaryTargets": [
+        "trapezius_lower"
+      ],
+      "secondaryTargets": [
+        "trapezius_middle",
+        "serratus_anterior"
+      ],
+      "pattern": "overhead_scapular_control",
+      "recommendationRole": "targeted_accessory_lower_traps",
+      "candidateFocus": [
+        "lower_traps",
+        "upper_back_accessory"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "low_to_medium",
+        "skillDemand": "low_to_medium",
+        "fatigueDemand": "low"
+      },
+      "evidenceRefs": [
+        "trap-emg-2003",
+        "lower-trap-emg-2011"
+      ],
+      "finding": "Useful lower-trap-focused accessory; acute EMG evidence does not establish superior lower-trap hypertrophy.",
+      "limitations": [
+        "loads are often light; direct hypertrophy evidence sparse"
+      ],
+      "nerdFact": "The Y-shaped arm path is often used to target the lower traps. Research mainly compares short-term muscle activity, so it is best viewed as a targeted accessory."
+    },
+    {
+      "id": "incline-y-raise",
+      "name": "Incline Y Raise",
+      "visibleTags": [
+        "Back",
+        "Upper Back",
+        "Shoulders"
+      ],
+      "primaryTargets": [
+        "trapezius_lower"
+      ],
+      "secondaryTargets": [
+        "trapezius_middle",
+        "serratus_anterior"
+      ],
+      "pattern": "overhead_scapular_control",
+      "recommendationRole": "targeted_accessory_lower_traps",
+      "candidateFocus": [
+        "lower_traps",
+        "upper_back_accessory"
+      ],
+      "practicalFit": {
+        "stability": "medium_to_high",
+        "progression": "low_to_medium",
+        "skillDemand": "low_to_medium",
+        "fatigueDemand": "low"
+      },
+      "evidenceRefs": [
+        "trap-emg-2003",
+        "lower-trap-emg-2011"
+      ],
+      "finding": "Practical variation for lower-trap emphasis; direct hypertrophy comparison evidence is limited.",
+      "limitations": [
+        "not a main general-back mass movement"
+      ],
+      "nerdFact": "Doing a Y raise on an incline bench supports your body while you move your arms overhead. Use a load you can control without swinging."
+    },
+    {
+      "id": "cable-y-raise",
+      "name": "Cable Y Raise",
+      "visibleTags": [
+        "Back",
+        "Upper Back",
+        "Shoulders"
+      ],
+      "primaryTargets": [
+        "trapezius_lower"
+      ],
+      "secondaryTargets": [
+        "trapezius_middle",
+        "serratus_anterior"
+      ],
+      "pattern": "overhead_scapular_control",
+      "recommendationRole": "targeted_accessory_lower_traps",
+      "candidateFocus": [
+        "lower_traps",
+        "upper_back_accessory"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "medium",
+        "skillDemand": "medium",
+        "fatigueDemand": "low"
+      },
+      "evidenceRefs": [
+        "trap-emg-2003",
+        "lower-trap-emg-2011"
+      ],
+      "finding": "Provides adjustable cable resistance for a lower-trap-focused movement; direct hypertrophy comparisons limited.",
+      "limitations": [
+        "setup may be less intuitive and evidence is not proof of superior growth"
+      ],
+      "nerdFact": "Cable Y raises let you adjust the resistance path. Keep the motion smooth and use a load that you can control."
+    },
+    {
+      "id": "prone-cobra",
+      "name": "Prone Cobra",
+      "visibleTags": [
+        "Back",
+        "Upper Back"
+      ],
+      "primaryTargets": [
+        "trapezius_lower"
+      ],
+      "secondaryTargets": [
+        "trapezius_middle",
+        "erector_spinae"
+      ],
+      "pattern": "scapular_retraction_and_extension",
+      "recommendationRole": "targeted_accessory_lower_traps",
+      "candidateFocus": [
+        "lower_traps",
+        "upper_back_accessory"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "low",
+        "skillDemand": "low_to_medium",
+        "fatigueDemand": "low"
+      },
+      "evidenceRefs": [
+        "lower-trap-emg-2011"
+      ],
+      "finding": "Acute EMG study found modified prone cobra useful for lower-trap recruitment; direct hypertrophy superiority not established.",
+      "limitations": [
+        "usually limited external loading; more targeted accessory than main mass exercise"
+      ],
+      "nerdFact": "The prone cobra is a light body-position exercise used to train the muscles around the shoulder blades. It is usually an accessory rather than a heavy back exercise."
+    },
+    {
+      "id": "back-extension-45",
+      "name": "45-Degree Back Extension",
+      "visibleTags": [
+        "Back"
+      ],
+      "primaryTargets": [
+        "erector_spinae"
+      ],
+      "secondaryTargets": [
+        "gluteus_maximus",
+        "hamstrings"
+      ],
+      "pattern": "trunk_extension_or_hip_hinge",
+      "recommendationRole": "core_pick_for_targeted_lower_back",
+      "candidateFocus": [
+        "lower_back",
+        "general_back"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "medium_to_high",
+        "skillDemand": "low_to_medium",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "roman-chair-strength-2003",
+        "roman-chair-endurance-2002"
+      ],
+      "finding": "Useful targeted extension candidate; how much the movement uses hip extension versus spinal extension affects which muscles are trained.",
+      "limitations": [
+        "small older training trials measured strength/endurance, not hypertrophy; results were mixed for strength"
+      ],
+      "nerdFact": "Back extensions can train your lower-back muscles, glutes and hamstrings. The way you move—more through the spine or more through the hips—changes the emphasis."
+    },
+    {
+      "id": "machine-lumbar-extension",
+      "name": "Machine Back Extension",
+      "visibleTags": [
+        "Back"
+      ],
+      "primaryTargets": [
+        "erector_spinae"
+      ],
+      "secondaryTargets": [
+        "multifidus"
+      ],
+      "pattern": "trunk_extension",
+      "recommendationRole": "core_pick_if_available_for_lower_back",
+      "candidateFocus": [
+        "lower_back"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "low",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "roman-chair-strength-2003",
+        "roman-chair-endurance-2002"
+      ],
+      "finding": "A standardized loaded trunk-extension option when available; the broader exercise family has endurance/strength evidence but little direct hypertrophy evidence.",
+      "limitations": [
+        "machine designs and trunk range vary; confirm existing library entry/equipment"
+      ],
+      "nerdFact": "A back-extension machine guides the trunk movement and can make it easier to use a repeatable range of motion."
+    },
+    {
+      "id": "romanian-deadlift",
+      "name": "Romanian Deadlift",
+      "visibleTags": [
+        "Back",
+        "Hamstrings",
+        "Glutes"
+      ],
+      "primaryTargets": [
+        "hamstrings",
+        "gluteus_maximus"
+      ],
+      "secondaryTargets": [
+        "erector_spinae",
+        "trapezius_upper",
+        "forearms"
+      ],
+      "pattern": "hip_hinge",
+      "recommendationRole": "compound_posterior_chain_option",
+      "candidateFocus": [
+        "strength",
+        "posterior_chain",
+        "general_back"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "medium_to_high",
+        "fatigueDemand": "moderate_to_high"
+      },
+      "evidenceRefs": [
+        "acsm-rt-2026"
+      ],
+      "finding": "A compound hip hinge for hamstrings and glutes with the spinal erectors stabilizing the trunk; not an erector isolation exercise.",
+      "limitations": [
+        "the cited source is broad resistance-training evidence, not a head-to-head back hypertrophy study"
+      ],
+      "nerdFact": "Romanian deadlifts mainly train your hamstrings and glutes while your lower-back muscles help keep your torso steady."
+    },
+    {
+      "id": "deadlift",
+      "name": "Deadlift",
+      "visibleTags": [
+        "Back",
+        "Hamstrings",
+        "Glutes",
+        "Quads"
+      ],
+      "primaryTargets": [
+        "gluteus_maximus",
+        "hamstrings",
+        "quadriceps"
+      ],
+      "secondaryTargets": [
+        "erector_spinae",
+        "trapezius_upper",
+        "forearms",
+        "latissimus_dorsi"
+      ],
+      "pattern": "compound_hip_hinge",
+      "recommendationRole": "compound_strength_option",
+      "candidateFocus": [
+        "strength",
+        "posterior_chain",
+        "general_back"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "high",
+        "fatigueDemand": "high"
+      },
+      "evidenceRefs": [
+        "acsm-rt-2026",
+        "rowing-biomechanics-2009"
+      ],
+      "finding": "Useful whole-body strength and posterior-chain lift; the trunk and upper back contribute, but it should not automatically be treated as the best pure back hypertrophy exercise.",
+      "limitations": [
+        "high skill and fatigue demands; no exercise-specific hypertrophy superiority established in this pack"
+      ],
+      "nerdFact": "Deadlifts train much of the posterior chain while your back muscles help hold the trunk steady. They are a demanding compound lift, not a back-isolation exercise."
+    },
+    {
+      "id": "good-morning",
+      "name": "Good Morning",
+      "visibleTags": [
+        "Back",
+        "Hamstrings",
+        "Glutes"
+      ],
+      "primaryTargets": [
+        "hamstrings",
+        "gluteus_maximus"
+      ],
+      "secondaryTargets": [
+        "erector_spinae"
+      ],
+      "pattern": "hip_hinge",
+      "recommendationRole": "advanced_compound_option",
+      "candidateFocus": [
+        "strength",
+        "posterior_chain",
+        "lower_back"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "high",
+        "fatigueDemand": "high"
+      },
+      "evidenceRefs": [
+        "acsm-rt-2026"
+      ],
+      "finding": "Advanced hip-hinge movement with significant trunk stabilization demands; should not be a default beginner recommendation.",
+      "limitations": [
+        "not directly ranked against other hinges for back hypertrophy in this evidence pack"
+      ],
+      "nerdFact": "Good mornings train the hamstrings and glutes while your back holds the torso position. Start conservatively and learn the movement before adding substantial load."
+    }
+  ],
+  "rankingGuardrails": [
+    "Do not use EMG as a direct proxy for hypertrophy.",
+    "Do not describe wide-grip pulldowns as universally best for lats.",
+    "Do not claim upper-lat/lower-lat isolation.",
+    "Do not claim a single row isolates rhomboids or middle traps.",
+    "Treat lower-trap Y/cobra movements as targeted accessories, not proven best hypertrophy exercises.",
+    "Treat Romanian deadlift and deadlift as compound posterior-chain options, not erector isolation.",
+    "Use evidence as one input alongside target fit, goal, priority, equipment, stability, progressability, skill demand and fatigue demand.",
+    "Preserve all valid selectable exercise options; only true constraints can filter eligibility.",
+    "Before import, match by existing exercise ID/name and avoid duplicates.",
+    "Do not mutate existing personal splits, histories or Firebase user data during import."
+  ]
+}

@@ -6,6 +6,14 @@ import {
   FitnessGoal,
   WorkoutMode,
 } from '../types';
+import {
+  getBackResearchForExercise,
+  getBackResearchSources,
+} from './backExerciseResearch';
+import {
+  getChestResearchForExercise,
+  getChestResearchSources,
+} from './chestExerciseResearch';
 
 const GOALS: FitnessGoal[] = [
   'muscle_gain',
@@ -40,6 +48,7 @@ type ExerciseSeed = {
   resistanceProfile?: number;
   practicality?: number;
   fatigueCost?: number;
+  shortDescription?: string;
 };
 
 const HOME_EQUIPMENT = new Set([
@@ -67,12 +76,13 @@ const VALID_MUSCLES = new Set([
   'forearms', 'front delts', 'gastrocnemius', 'glutes', 'gluteus medius',
   'gluteus minimus', 'grip', 'hamstrings', 'hip flexors', 'lateral delts',
   'lats', 'obliques', 'quadriceps', 'rear delts', 'shoulders', 'soleus',
-  'spinal erectors', 'traps', 'triceps', 'upper back', 'upper chest',
+  'lower back', 'spinal erectors', 'traps', 'triceps', 'upper back', 'upper chest',
   'wrist extensors', 'wrist flexors',
 ]);
 const VALID_EQUIPMENT = new Set([
   '45-degree back extension bench', 'Ab wheel', 'Abdominal crunch machine',
-  'Ankle strap', 'Assisted pull-up machine', 'Bar or rope attachment',
+  'Ankle strap', 'Assisted dip machine', 'Assisted pull-up machine', 'Back extension machine',
+  'Bar or rope attachment',
   'Barbell', 'Belt squat machine', 'Bench', 'Bodyweight', 'Cable machine',
   'Captain’s chair', 'Chest press machine', 'Chest-supported row machine',
   'Close-grip pulldown handle', 'Decline bench', 'Dip bars',
@@ -86,7 +96,7 @@ const VALID_EQUIPMENT = new Set([
   'Neutral-grip pulldown handle', 'Nordic curl anchor', 'Pec deck machine',
   'Plates', 'Preacher bench', 'Pull-up bar', 'Rack', 'Raised platform',
   'Resistance Band', 'Reverse hyperextension machine',
-  'Reverse pec deck machine', 'Rope attachment', 'Row handle',
+  'Reverse pec deck machine', 'Rope attachment', 'Row handle', 'Shrug machine',
   'Seated calf raise machine', 'Seated leg curl machine',
   'Shoulder press machine', 'Single handle', 'Single handles',
   'Sissy squat bench', 'Smith machine', 'Stability ball',
@@ -132,7 +142,9 @@ const makeExercise = (seed: ExerciseSeed): ExerciseDefinition => {
     recommendedRestSeconds: seed.rest ?? 120,
     hypertrophySuitability: seed.hypertrophy ?? 4,
     strengthSuitability: seed.strength ?? 3,
-    shortDescription: `${seed.name} is a ${seed.movementPattern.toLowerCase()} exercise that trains ${seed.primaryMuscles.join(', ')}.`,
+    shortDescription:
+      seed.shortDescription ??
+      `${seed.name} is a ${seed.movementPattern.toLowerCase()} exercise that trains ${seed.primaryMuscles.join(', ')}.`,
     setup: `Set up the ${equipment.join(' and ').toLowerCase()} securely and choose a load or variation that allows controlled repetitions.`,
     execution: `Move through a comfortable range while keeping the target muscles engaged. Control the return and stop if you feel sharp pain.`,
     formCues: [
@@ -170,6 +182,10 @@ const makeExercise = (seed: ExerciseSeed): ExerciseDefinition => {
 };
 
 const EXERCISE_SEEDS: ExerciseSeed[] = [
+  { id: 'incline-cable-chest-press', name: 'Incline Cable Chest Press', bodyParts: ['Chest', 'Upper Chest'], primaryMuscles: ['Chest', 'Upper chest'], secondaryMuscles: ['Front delts', 'Triceps'], equipment: ['Cable machine', 'Bench'], movementPattern: 'Incline push', repRange: [8, 15], rest: 120, rangeOfMotion: 4, stability: 3, overload: 4, practicality: 3, alternatives: ['incline-dumbbell-press', 'incline-barbell-press', 'machine-chest-press'] },
+  { id: 'assisted-chest-dip', name: 'Assisted Chest Dip', bodyParts: ['Chest'], primaryMuscles: ['Chest'], secondaryMuscles: ['Triceps', 'Front delts'], equipment: ['Assisted dip machine'], movementPattern: 'Compound push', repRange: [8, 15], rest: 120, strength: 3, rangeOfMotion: 4, stability: 4, overload: 4, practicality: 4, alternatives: ['chest-dip', 'push-up', 'machine-chest-press'] },
+  { id: 'cable-chest-press', name: 'Cable Chest Press', bodyParts: ['Chest'], primaryMuscles: ['Chest'], secondaryMuscles: ['Front delts', 'Triceps'], equipment: ['Cable machine', 'Single handles'], movementPattern: 'Horizontal push', repRange: [8, 15], rest: 120, rangeOfMotion: 4, stability: 3, overload: 4, practicality: 4, alternatives: ['barbell-bench-press', 'machine-chest-press', 'incline-cable-chest-press'] },
+  { id: 'dumbbell-fly', name: 'Dumbbell Fly', bodyParts: ['Chest'], primaryMuscles: ['Chest'], secondaryMuscles: ['Front delts'], equipment: ['Dumbbells', 'Flat bench'], movementPattern: 'Horizontal adduction', trainingModes: ['gym', 'home'], repRange: [10, 20], rest: 90, strength: 2, rangeOfMotion: 4, stability: 2, overload: 3, practicality: 3, alternatives: ['cable-chest-fly', 'pec-deck', 'incline-dumbbell-press'] },
   { id: 'incline-dumbbell-press', name: 'Incline Dumbbell Press', bodyParts: ['Chest', 'Upper Chest'], primaryMuscles: ['Upper chest'], secondaryMuscles: ['Front delts', 'Triceps'], equipment: ['Dumbbells', 'Incline bench'], movementPattern: 'Horizontal push', repRange: [6, 12], rest: 150, strength: 3, rangeOfMotion: 5, stability: 3, overload: 4, practicality: 4, alternatives: ['incline-barbell-press', 'smith-incline-press', 'incline-machine-chest-press'] },
   { id: 'flat-dumbbell-press', name: 'Flat Dumbbell Press', bodyParts: ['Chest'], primaryMuscles: ['Chest'], secondaryMuscles: ['Front delts', 'Triceps'], equipment: ['Dumbbells', 'Flat bench'], movementPattern: 'Horizontal push', repRange: [6, 12], rest: 150, rangeOfMotion: 5, stability: 3, overload: 4, alternatives: ['barbell-bench-press', 'machine-chest-press', 'smith-bench-press'] },
   { id: 'barbell-bench-press', name: 'Barbell Bench Press', bodyParts: ['Chest'], primaryMuscles: ['Chest'], secondaryMuscles: ['Front delts', 'Triceps'], equipment: ['Barbell', 'Bench', 'Rack'], movementPattern: 'Horizontal push', difficulty: 'intermediate', repRange: [4, 10], rest: 180, strength: 5, rangeOfMotion: 3, stability: 4, overload: 5, alternatives: ['flat-dumbbell-press', 'machine-chest-press', 'smith-bench-press'] },
@@ -251,6 +267,16 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
   { id: 'machine-low-row', name: 'Machine Low Row', bodyParts: ['Back', 'Lats', 'Upper Back'], primaryMuscles: ['Lats'], secondaryMuscles: ['Upper back', 'Biceps'], equipment: ['Low row machine'], movementPattern: 'Horizontal pull', repRange: [8, 15], stability: 5, overload: 4, alternatives: ['seated-cable-row', 'chest-supported-row'] },
   { id: 'barbell-shrug', name: 'Barbell Shrug', bodyParts: ['Back', 'Upper Back'], primaryMuscles: ['Traps'], secondaryMuscles: ['Forearms'], equipment: ['Barbell', 'Plates'], movementPattern: 'Scapular elevation', repRange: [8, 15], strength: 4, overload: 5, alternatives: ['dumbbell-shrug', 'face-pull'] },
   { id: 'dumbbell-shrug', name: 'Dumbbell Shrug', bodyParts: ['Back', 'Upper Back'], primaryMuscles: ['Traps'], secondaryMuscles: ['Forearms'], equipment: ['Dumbbells'], movementPattern: 'Scapular elevation', trainingModes: ['gym', 'home'], repRange: [10, 20], practicality: 5, alternatives: ['barbell-shrug', 'face-pull'] },
+  { id: 'dumbbell-pullover', name: 'Dumbbell Pullover', bodyParts: ['Back'], primaryMuscles: ['Chest'], secondaryMuscles: ['Lats'], equipment: ['Dumbbells', 'Flat bench'], movementPattern: 'Shoulder extension', shortDescription: 'Lower a dumbbell behind your head in a controlled arc while lying on a bench.', repRange: [8, 15], rangeOfMotion: 4, stability: 3, alternatives: ['cable-chest-fly', 'straight-arm-pulldown', 'lat-pulldown'] },
+  { id: 'machine-shrug', name: 'Machine Shrug', bodyParts: ['Back', 'Upper Back'], primaryMuscles: ['Traps'], secondaryMuscles: ['Upper back'], equipment: ['Shrug machine'], movementPattern: 'Scapular elevation', shortDescription: 'Raise your shoulders against machine resistance, then lower them slowly.', repRange: [8, 15], stability: 5, overload: 4, alternatives: ['barbell-shrug', 'dumbbell-shrug'] },
+  { id: 'cable-shrug', name: 'Cable Shrug', bodyParts: ['Back', 'Upper Back'], primaryMuscles: ['Traps'], secondaryMuscles: ['Upper back', 'Forearms'], equipment: ['Cable machine'], movementPattern: 'Scapular elevation', shortDescription: 'Raise your shoulders against cable resistance, then lower them with control.', repRange: [10, 20], stability: 4, practicality: 4, alternatives: ['barbell-shrug', 'dumbbell-shrug', 'machine-shrug'] },
+  { id: 'prone-y-raise', name: 'Prone Y Raise', bodyParts: ['Back', 'Upper Back', 'Shoulders'], primaryMuscles: ['Upper back'], secondaryMuscles: ['Shoulders'], equipment: ['Bodyweight'], trainingModes: ['gym', 'home'], movementPattern: 'Overhead scapular control', shortDescription: 'Lie face down and lift your arms into a Y shape with controlled movement.', difficulty: 'beginner', repRange: [10, 20], practicality: 5, alternatives: ['incline-y-raise', 'cable-y-raise', 'face-pull'] },
+  { id: 'incline-y-raise', name: 'Incline Y Raise', bodyParts: ['Back', 'Upper Back', 'Shoulders'], primaryMuscles: ['Upper back'], secondaryMuscles: ['Shoulders'], equipment: ['Dumbbells', 'Incline bench'], trainingModes: ['gym', 'home'], movementPattern: 'Overhead scapular control', shortDescription: 'Lie chest-supported on an incline bench and raise your arms in a Y shape.', difficulty: 'beginner', repRange: [10, 20], stability: 4, alternatives: ['prone-y-raise', 'cable-y-raise', 'face-pull'] },
+  { id: 'cable-y-raise', name: 'Cable Y Raise', bodyParts: ['Back', 'Upper Back', 'Shoulders'], primaryMuscles: ['Upper back'], secondaryMuscles: ['Shoulders'], equipment: ['Cable machine', 'Single handle'], movementPattern: 'Overhead scapular control', shortDescription: 'Raise cable handles in a Y shape with a comfortable, controlled range.', difficulty: 'beginner', repRange: [10, 20], rangeOfMotion: 4, alternatives: ['prone-y-raise', 'incline-y-raise', 'face-pull'] },
+  { id: 'prone-cobra', name: 'Prone Cobra', bodyParts: ['Back', 'Upper Back'], primaryMuscles: ['Upper back'], secondaryMuscles: ['Lower back'], equipment: ['Bodyweight'], trainingModes: ['gym', 'home'], movementPattern: 'Scapular retraction and extension', shortDescription: 'Lie face down and gently lift your chest and arms while staying controlled.', difficulty: 'beginner', repRange: [10, 20], practicality: 5, alternatives: ['prone-y-raise', 'incline-y-raise', 'face-pull'] },
+  { id: 'back-extension-45', name: '45-Degree Back Extension', bodyParts: ['Back'], primaryMuscles: ['Lower back'], secondaryMuscles: ['Glutes', 'Hamstrings'], equipment: ['45-degree back extension bench'], movementPattern: 'Trunk extension or hip hinge', shortDescription: 'Raise your torso from a bent position on a back-extension bench through a comfortable range.', repRange: [8, 15], stability: 4, overload: 4, alternatives: ['machine-lumbar-extension', 'romanian-deadlift', '45-degree-back-extension-glute-bias'] },
+  { id: 'machine-lumbar-extension', name: 'Machine Back Extension', bodyParts: ['Back'], primaryMuscles: ['Lower back'], secondaryMuscles: ['Lower back'], equipment: ['Back extension machine'], movementPattern: 'Trunk extension', shortDescription: 'Straighten your torso against the machine resistance with controlled repetitions.', repRange: [10, 15], stability: 5, overload: 4, alternatives: ['back-extension-45', '45-degree-back-extension-glute-bias', 'romanian-deadlift'] },
+  { id: 'deadlift', name: 'Deadlift', bodyParts: ['Back', 'Hamstrings', 'Glutes', 'Quadriceps'], primaryMuscles: ['Glutes', 'Hamstrings', 'Quadriceps'], secondaryMuscles: ['Lower back', 'Traps', 'Forearms', 'Lats'], equipment: ['Barbell', 'Plates', 'Rack'], movementPattern: 'Compound hip hinge', shortDescription: 'Lift a bar from the floor by standing tall and keeping the load close.', difficulty: 'advanced', repRange: [3, 8], rest: 210, strength: 5, stability: 2, overload: 5, fatigueCost: 5, alternatives: ['romanian-deadlift', 'good-morning', 'back-extension-45'] },
   { id: 'barbell-overhead-press', name: 'Barbell Overhead Press', bodyParts: ['Shoulders', 'Front Delts'], primaryMuscles: ['Front delts'], secondaryMuscles: ['Lateral delts', 'Triceps'], equipment: ['Barbell', 'Rack'], movementPattern: 'Vertical push', repRange: [4, 10], rest: 150, strength: 5, stability: 3, overload: 5, alternatives: ['smith-overhead-press', 'dumbbell-shoulder-press'] },
   { id: 'arnold-press', name: 'Arnold Press', bodyParts: ['Shoulders', 'Front Delts'], primaryMuscles: ['Front delts'], secondaryMuscles: ['Lateral delts', 'Triceps'], equipment: ['Dumbbells', 'Bench'], movementPattern: 'Vertical push', repRange: [8, 15], rangeOfMotion: 4, stability: 3, trainingModes: ['gym', 'home'], alternatives: ['dumbbell-shoulder-press', 'machine-shoulder-press'] },
   { id: 'machine-shoulder-press', name: 'Machine Shoulder Press', bodyParts: ['Shoulders', 'Front Delts'], primaryMuscles: ['Front delts'], secondaryMuscles: ['Lateral delts', 'Triceps'], equipment: ['Shoulder press machine'], movementPattern: 'Vertical push', repRange: [8, 15], stability: 5, overload: 4, alternatives: ['smith-overhead-press', 'dumbbell-shoulder-press'] },
@@ -337,8 +363,22 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
   { id: 'towel-hang', name: 'Towel Hang', bodyParts: ['Forearms'], primaryMuscles: ['Grip', 'Forearms'], secondaryMuscles: ['Lats'], equipment: ['Pull-up bar', 'Towel'], movementPattern: 'Grip isometric', difficulty: 'advanced', repRange: [10, 45], trainingModes: ['gym', 'home'], alternatives: ['dead-hang', 'farmer-carry'] },
 ];
 
-export const EXERCISE_LIBRARY: ExerciseDefinition[] =
-  EXERCISE_SEEDS.map(makeExercise);
+export const EXERCISE_LIBRARY: ExerciseDefinition[] = EXERCISE_SEEDS.map(
+  makeExercise
+).map((exercise) => {
+  const research = getBackResearchForExercise(exercise.id);
+  const chestResearch = getChestResearchForExercise(exercise.id);
+  const researchBodyParts = [
+    ...(research?.visibleTags || []),
+    ...(chestResearch?.visibleTags || []),
+  ].map((tag) => (tag === 'Quads' ? 'Quadriceps' : tag));
+  return researchBodyParts.length > 0
+    ? {
+        ...exercise,
+        bodyParts: [...new Set([...exercise.bodyParts, ...researchBodyParts])],
+      }
+    : exercise;
+});
 
 export function validateExerciseCatalog(
   catalog: readonly ExerciseDefinition[] = EXERCISE_LIBRARY
@@ -438,7 +478,8 @@ const priorityRelevanceToTarget = (priority: string, bodyPart: string): number =
 
 const priorityExerciseMatch = (
   exercise: ExerciseDefinition,
-  priority: string
+  priority: string,
+  bodyPart: string
 ): number => {
   if (priority === 'balanced') return 0.4;
   if (
@@ -446,27 +487,314 @@ const priorityExerciseMatch = (
     exercise.bodyParts.some((part) => part.toLowerCase() === 'chest')
   ) return 0.35;
   const targets = priorityMuscles[priority] || [];
-  const primary = exercise.primaryMuscles.some((muscle) =>
+  const primaryTargets = exercise.primaryMuscles.filter((muscle) =>
     targets.some((target) => muscle.toLowerCase().includes(target))
   );
-  if (primary) return 1;
-  const secondary = exercise.secondaryMuscles.some((muscle) =>
+  const secondaryTargets = exercise.secondaryMuscles.filter((muscle) =>
     targets.some((target) => muscle.toLowerCase().includes(target))
   );
-  return secondary ? 0.5 : 0;
+  const primaryMatch = (muscle: string) => {
+    const normalized = muscle.toLowerCase();
+    if (priority === 'shoulders') {
+      if (normalized.includes('lateral delt')) return 1.2;
+      if (normalized.includes('rear delt')) return 1;
+      if (normalized.includes('front delt')) return 0.75;
+    }
+    if (priority === 'back_v_taper') {
+      if (normalized.includes('lat')) return 1.2;
+      if (normalized.includes('upper back')) return 0.8;
+    }
+    if (priority === 'upper_chest' && normalized.includes('upper chest')) return 1.2;
+    return 1;
+  };
+  const primaryScore = primaryTargets.reduce(
+    (score, muscle) => Math.max(score, primaryMatch(muscle)),
+    0
+  );
+  if (primaryScore > 0) return primaryScore;
+  if (secondaryTargets.length === 0) return 0;
+  if (
+    priority === 'shoulders' &&
+    bodyPart.toLowerCase() === 'shoulders' &&
+    secondaryTargets.some((muscle) => muscle.toLowerCase().includes('lateral delt'))
+  ) {
+    return 0.55;
+  }
+  return 0.5;
 };
 
 const scoreTargetRelevance = (exercise: ExerciseDefinition, bodyPart: string) => {
   const target = bodyPart.toLowerCase();
-  const primaryMatches = exercise.primaryMuscles.some(
-    (muscle) => muscle.toLowerCase() === target || muscle.toLowerCase().includes(target.replace(/s$/, ''))
-  );
-  if (primaryMatches) return 5;
+  const primary = exercise.primaryMuscles.map((muscle) => muscle.toLowerCase());
+  const secondary = exercise.secondaryMuscles.map((muscle) => muscle.toLowerCase());
+  const primaryHas = (needle: string) =>
+    primary.some((muscle) => muscle.includes(needle));
+  const secondaryHas = (needle: string) =>
+    secondary.some((muscle) => muscle.includes(needle));
+
+  if (target === 'upper chest') {
+    if (primaryHas('upper chest')) return 5;
+    if (secondaryHas('upper chest')) return 3.5;
+    if (primaryHas('chest')) return 3.5;
+  }
+  if (target === 'chest') {
+    if (primary.some((muscle) => muscle === 'chest')) return 5;
+    if (primaryHas('upper chest')) return 4.5;
+  }
+  if (target === 'shoulders') {
+    if (primary.some((muscle) => /^(front|lateral|rear) delts?$/.test(muscle))) return 5;
+    if (secondary.some((muscle) => /^(front|lateral|rear) delts?$/.test(muscle))) return 3.5;
+  }
+  if (target === 'lateral delts' && primaryHas('lateral delt')) return 5;
+  if (target === 'front delts' && primaryHas('front delt')) return 5;
+  if (target === 'rear delts' && primaryHas('rear delt')) return 5;
+  if (target === 'back') {
+    if (primaryHas('lat') || primaryHas('upper back')) return 4.6;
+    if (secondaryHas('lat') || secondaryHas('upper back')) return 3.5;
+  }
+  if (target === 'lats' && primaryHas('lat')) return 5;
+  if (target === 'upper back' && primaryHas('upper back')) return 5;
+  if (target === 'quadriceps' && primaryHas('quadricep')) return 5;
+  if (target === 'hamstrings' && primaryHas('hamstring')) return 5;
+
+  if (primary.some((muscle) =>
+    muscle === target || muscle.includes(target.replace(/s$/, ''))
+  )) return 5;
   if (exercise.bodyParts.some((part) => part.toLowerCase() === target)) return 4;
   const secondaryMatches = exercise.secondaryMuscles.some(
     (muscle) => muscle.toLowerCase() === target || muscle.toLowerCase().includes(target.replace(/s$/, ''))
   );
   return secondaryMatches ? 3 : 2;
+};
+
+const scoreBackResearchFit = (
+  bodyPart: string,
+  exerciseId: string,
+  profile: ExerciseRecommendationProfile
+): number => {
+  const research = getBackResearchForExercise(exerciseId);
+  if (!research) return 0;
+
+  const targetFocus: Record<string, string[]> = {
+    back: [
+      'general_back',
+      'lats',
+      'upper_back',
+      'upper_back_accessory',
+      'rear_delts',
+      'upper_traps',
+      'lower_traps',
+      'lower_back',
+      'posterior_chain',
+    ],
+    lats: ['lats', 'general_back'],
+    'upper back': [
+      'upper_back',
+      'upper_back_accessory',
+      'rear_delts',
+      'upper_traps',
+      'lower_traps',
+    ],
+  };
+  const target = bodyPart.toLowerCase();
+  const matchingFocus = research.candidateFocus.filter((focus) =>
+    targetFocus[target]?.includes(focus)
+  );
+  let score = matchingFocus.length > 0 ? (target === 'back' ? 1 : 2) : -0.5;
+
+  const primaryTargetsByBodyPart: Record<string, string[]> = {
+    back: [
+      'latissimus_dorsi',
+      'trapezius_upper',
+      'trapezius_middle',
+      'trapezius_lower',
+      'rhomboids',
+      'erector_spinae',
+      'rear_deltoid',
+    ],
+    lats: ['latissimus_dorsi'],
+    'upper back': [
+      'trapezius_upper',
+      'trapezius_middle',
+      'trapezius_lower',
+      'rhomboids',
+      'rear_deltoid',
+    ],
+  };
+  const selectedTargets = primaryTargetsByBodyPart[target] || [];
+  if (research.primaryTargets.some((item) => selectedTargets.includes(item))) {
+    score += 1.5;
+  } else if (
+    research.secondaryTargets.some((item) => selectedTargets.includes(item))
+  ) {
+    score += 0.5;
+  }
+
+  const role = research.recommendationRole;
+  if (role.startsWith('core_pick')) score += 1;
+  else if (role.includes('strong_alternative')) score += 0.6;
+  else if (role.includes('targeted_accessory')) {
+    score += target === 'upper back' ? 0.4 : -0.8;
+  } else if (role.includes('compound')) {
+    score += profile.goal === 'strength' || profile.physiqueFocus === 'strength'
+      ? 1
+      : -1;
+  } else if (role === 'additional_option') {
+    score -= 1.2;
+  } else {
+    score -= 0.3;
+  }
+
+  const fitValue = (fit: string) => {
+    if (fit === 'high') return 2;
+    if (fit === 'medium_to_high') return 1.5;
+    if (fit === 'medium') return 1;
+    if (fit === 'low_to_medium') return 0.5;
+    return 0;
+  };
+  const practicalFit = research.practicalFit;
+  score +=
+    fitValue(practicalFit.progression) * 0.35 +
+    fitValue(practicalFit.stability) * 0.25 -
+    fitValue(practicalFit.skillDemand) * 0.2 -
+    fitValue(practicalFit.fatigueDemand) *
+      (profile.goal === 'strength' ? 0.1 : 0.2);
+
+  if (
+    profile.physiquePriorities.includes('back_v_taper') &&
+    research.candidateFocus.includes('lats')
+  ) {
+    score += 1.5;
+  } else if (
+    profile.physiquePriorities.includes('back_v_taper') &&
+    research.candidateFocus.includes('upper_back')
+  ) {
+    score += 0.5;
+  }
+
+  const citedSources = getBackResearchSources(research.evidenceRefs);
+  const evidenceNotes = [
+    research.finding,
+    ...research.limitations,
+    ...citedSources.map((source) => source.type),
+  ].join(' ').toLowerCase();
+  if (
+    /acute emg|does not establish|not establish|not proven|limited direct evidence/.test(
+      evidenceNotes
+    )
+  ) {
+    score -= 0.5;
+  }
+
+  return score;
+};
+
+const scoreChestResearchFit = (
+  bodyPart: string,
+  exerciseId: string,
+  profile: ExerciseRecommendationProfile
+): { programmingScore: number; personalizationScore: number; priorityScore: number } => {
+  const research = getChestResearchForExercise(exerciseId);
+  const target = bodyPart.toLowerCase();
+  if (!research || !['chest', 'upper chest'].includes(target)) {
+    return { programmingScore: 0, personalizationScore: 0, priorityScore: 0 };
+  }
+
+  const targetIds =
+    target === 'upper chest'
+      ? ['pectoralis_major_clavicular']
+      : ['pectoralis_major_sternocostal', 'pectoralis_major_clavicular'];
+  let programmingScore = research.primaryTargets.some((item) =>
+    targetIds.includes(item)
+  )
+    ? 1.5
+    : research.secondaryTargets.some((item) => targetIds.includes(item))
+      ? 0.5
+      : 0;
+
+  if (target === 'upper chest') {
+    if (research.candidateFocus.includes('upper_chest')) programmingScore += 2;
+    else if (research.candidateFocus.includes('overall_chest')) programmingScore += 0.5;
+  } else if (research.candidateFocus.includes('overall_chest')) {
+    programmingScore += 1.25;
+  }
+
+  if (research.recommendationRole === 'core_pick') programmingScore += 1.25;
+  else if (research.recommendationRole === 'upper_chest_pick') {
+    programmingScore += target === 'upper chest' ? 1.25 : 0.25;
+  } else if (research.recommendationRole === 'strong_option') {
+    programmingScore += 0.75;
+  } else if (research.recommendationRole === 'home_option') {
+    programmingScore += profile.workoutMode === 'home' ? 0.75 : 0.25;
+  } else if (research.recommendationRole === 'accessory') {
+    programmingScore += 0.25;
+  } else {
+    programmingScore -= 0.25;
+  }
+
+  const fitValue: Record<string, number> = {
+    low: 0,
+    low_to_moderate: 0.5,
+    low_to_medium: 0.5,
+    medium: 1,
+    medium_to_high: 1.5,
+    moderate: 1,
+    moderate_to_high: 1.5,
+    high: 2,
+  };
+  programmingScore +=
+    (fitValue[research.practicalFit.progression] || 0) * 0.25 +
+    (fitValue[research.practicalFit.stability] || 0) * 0.2 -
+    (fitValue[research.practicalFit.skillDemand] || 0) * 0.1 -
+    (fitValue[research.practicalFit.fatigueDemand] || 0) * 0.1;
+
+  const evidenceNotes = [
+    research.finding,
+    ...research.limitations,
+    ...getChestResearchSources(research.evidenceRefs).map((source) => source.type),
+  ].join(' ').toLowerCase();
+  if (/acute emg|not establish|not proven|limited direct|not chest-specific/.test(evidenceNotes)) {
+    programmingScore -= 0.2;
+  }
+
+  let personalizationScore = 0;
+  if (
+    (profile.goal === 'strength' || profile.physiqueFocus === 'strength') &&
+    research.candidateFocus.includes('strength')
+  ) {
+    personalizationScore += 1.5;
+  }
+  if (
+    (profile.goal === 'muscle_gain' || profile.goal === 'hypertrophy') &&
+    research.candidateFocus.includes('hypertrophy')
+  ) {
+    personalizationScore += 0.75;
+  }
+  if (
+    profile.physiqueFocus === 'aesthetic_physique' &&
+    research.candidateFocus.includes('upper_chest')
+  ) {
+    personalizationScore += 0.5;
+  }
+  if (
+    profile.workoutMode === 'home' &&
+    research.candidateFocus.some((focus) =>
+      ['home', 'home_or_gym_progression', 'bodyweight', 'resistance_band'].includes(focus)
+    )
+  ) {
+    personalizationScore += 0.5;
+  }
+
+  const priorityScore =
+    profile.physiquePriorities.includes('upper_chest') &&
+    research.primaryTargets.includes('pectoralis_major_clavicular') &&
+    research.candidateFocus.includes('upper_chest')
+      ? target === 'upper chest'
+        ? 1.5
+        : 0.75
+      : 0;
+
+  return { programmingScore, personalizationScore, priorityScore };
 };
 
 const scoreGoalFit = (
@@ -528,14 +856,22 @@ const scoreExercise = (
   const factors = exercise.recommendationFactors;
   const availableEquipment = new Set(profile.availableEquipment);
   availableEquipment.add('Bodyweight');
+  const hasEquipmentFilter = profile.availableEquipment.some(
+    (item) => item !== 'Bodyweight'
+  );
   const requiredEquipment = exercise.equipment.filter((item) => item !== 'Bodyweight');
-  const missingEquipmentCount = requiredEquipment.filter((item) => !availableEquipment.has(item)).length;
+  const missingEquipmentCount = hasEquipmentFilter
+    ? requiredEquipment.filter((item) => !availableEquipment.has(item)).length
+    : 0;
   const equipmentScore =
     (requiredEquipment.length === 0 ? 8 : Math.max(0, 10 - requiredEquipment.length * 1.5)) -
     missingEquipmentCount * 12;
   const targetFit = scoreTargetRelevance(exercise, bodyPart);
+  const chestResearchFit = scoreChestResearchFit(bodyPart, exercise.id, profile);
   const programmingScore =
     targetFit * 4 +
+    scoreBackResearchFit(bodyPart, exercise.id, profile) +
+    chestResearchFit.programmingScore +
     factors.stability * 3 +
     factors.rangeOfMotion * 3 +
     factors.progressiveOverload * 3 +
@@ -553,17 +889,18 @@ const scoreExercise = (
         ? 4
         : 6;
   const focusWeight = profile.physiqueFocus === 'strength' ? 6 : 5;
-  let priorityScore = 0;
+  let priorityScore = chestResearchFit.priorityScore;
   let personalizationScore =
     (goalFit - 3) * goalWeight +
     (focusFit - 3) * focusWeight +
     scoreFocusSpecificCharacteristics(exercise, profile.physiqueFocus) +
     equipmentScore;
+  personalizationScore += chestResearchFit.personalizationScore;
 
   for (const priority of profile.physiquePriorities) {
     const targetRelevance = priorityRelevanceToTarget(priority, bodyPart);
     if (targetRelevance > 0) {
-      priorityScore += 14 * targetRelevance * priorityExerciseMatch(exercise, priority);
+      priorityScore += 18 * targetRelevance * priorityExerciseMatch(exercise, priority, bodyPart);
     }
   }
   personalizationScore += priorityScore;
@@ -629,15 +966,16 @@ export function scoreExerciseRecommendation(
     (scoreGoalFit(exercise, profile.goal) - 3) +
     (scoreFocusFit(exercise, profile.physiqueFocus) - 3) +
     scoreFocusSpecificCharacteristics(exercise, profile.physiqueFocus) / 5 +
-    componentScores.priorityScore / 5;
-
+    componentScores.priorityScore / 5 +
+    (scoreTargetRelevance(exercise, bodyPart) - 3) * 0.75;
   return {
     exercise,
     ...componentScores,
     label,
     isForYou:
       componentScores.personalizationScore >= personalizationThreshold &&
-      personalizedFit >= 5,
+      personalizedFit >= 5 &&
+      scoreTargetRelevance(exercise, bodyPart) >= 4,
   };
 }
 
@@ -645,21 +983,51 @@ export function rankExercises(
   bodyPart: string,
   profile: ExerciseRecommendationProfile
 ): RankedExercise[] {
+  return getExerciseRecommendationPipeline(bodyPart, profile).ranked;
+}
+
+export interface ExerciseRecommendationPipeline {
+  catalogCount: number;
+  bodyPartCount: number;
+  workoutModeCount: number;
+  equipmentCount: number;
+  ranked: RankedExercise[];
+}
+
+export function getExerciseRecommendationPipeline(
+  bodyPart: string,
+  profile: ExerciseRecommendationProfile
+): ExerciseRecommendationPipeline {
   const availableEquipment = new Set(profile.availableEquipment);
   availableEquipment.add('Bodyweight');
-
-  return EXERCISE_LIBRARY.filter(
+  const hasEquipmentFilter = profile.availableEquipment.some(
+    (item) => item !== 'Bodyweight'
+  );
+  const bodyPartMatches = EXERCISE_LIBRARY.filter((exercise) =>
+    exercise.bodyParts.some((part) => part.toLowerCase() === bodyPart.toLowerCase())
+  );
+  const workoutModeMatches = bodyPartMatches.filter((exercise) =>
+    exercise.trainingModes.includes(profile.workoutMode)
+  );
+  const equipmentMatches = workoutModeMatches.filter(
     (exercise) =>
-      exercise.trainingModes.includes(profile.workoutMode) &&
-      exercise.bodyParts.some((part) => part.toLowerCase() === bodyPart.toLowerCase()) &&
+      !hasEquipmentFilter ||
       exercise.equipment.every((equipment) => availableEquipment.has(equipment))
-  )
+  );
+  const scored = equipmentMatches
     .map((exercise) => scoreExerciseRecommendation(bodyPart, exercise, profile))
     .sort(
       (left, right) =>
         right.score - left.score ||
         left.exercise.name.localeCompare(right.exercise.name)
     );
+  return {
+    catalogCount: EXERCISE_LIBRARY.length,
+    bodyPartCount: bodyPartMatches.length,
+    workoutModeCount: workoutModeMatches.length,
+    equipmentCount: equipmentMatches.length,
+    ranked: scored,
+  };
 }
 
 export function getCompatibleExerciseAlternatives(

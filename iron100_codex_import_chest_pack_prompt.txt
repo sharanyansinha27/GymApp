@@ -1,0 +1,66 @@
+IRON 100 — IMPORT THE CHEST RESEARCH PACK SAFELY
+
+Research inputs:
+- iron100_chest_research_v1.md
+- iron100_chest_exercise_seed_v1.json
+
+IMPORTANT CONTEXT
+The Back research has been integrated and manually verified in the browser. The shared FOR YOU badge issue was fixed and the temporary exercise-list debug panels were removed. Continue from the existing codebase; do not redo Back or re-import its pack.
+
+TASK
+First inspect the current codebase and Git status. Then safely integrate the Chest research into the existing centralized exercise library, internal research metadata, Nerd Fact system, and current personalized recommendation pipeline. Do not blindly replace the library and do not create duplicate records.
+
+BEFORE EDITING
+1. Inspect the current centralized exercise library, type definitions, recommendation scoring/qualification, badge rendering, Nerd Fact modal, Gym/Home and equipment filters, tests, and Chest/Upper Chest identifiers.
+2. Check the existing Git diff and preserve all unrelated user changes.
+3. Read both supplied research files fully. Audit source references and caveats. If a source field appears mismatched or unverifiable, correct/remove it rather than inventing information.
+4. Match existing records by stable ID and normalized names/aliases. Update existing records where appropriate. Add only truly missing useful movements that fit the current schema. Treat angle variants and machine-style variants as aliases/setup variants when appropriate, not automatic duplicate exercises.
+
+USER-FACING REQUIREMENTS
+- Keep names simple: Chest, Upper Chest, and familiar exercise names.
+- Do not expose internal target IDs, evidence tiers, numeric evidence scores, EMG terminology, or scientific caveats on regular exercise cards.
+- Nerd Facts should usually be 1–2 plain-language sentences. All cited source links must be genuine, relevant, and clickable in the existing modal.
+- Keep the current clean UI and Add/Remove behavior.
+
+RECOMMENDATION REQUIREMENTS
+- Use Chest and Upper Chest identifiers that already exist in the project's current taxonomy; do not invent conflicting category IDs.
+- Use research metadata, primary/secondary targets, candidate focus, and practical-fit data as inputs to the existing shared recommendation ranker. Do not create a separate Chest-only scoring system.
+- For Chest, strong candidates may include compatible flat presses, machine presses, cable presses, push-ups, and complementary fly variants.
+- For Upper Chest, suitable moderate-incline presses should generally score well when compatible with the user's goal and priority. Do not require exactly 30 degrees and do not claim regional isolation.
+- Exercise evidence does not establish a single universal #1 chest movement. Do not present candidate ordering as proven superiority.
+- EMG is acute activation evidence, not direct proof of hypertrophy.
+- Machine and free-weight options must remain valid alternatives. Push-ups remain valid when bodyweight mode/equipment compatibility allows them.
+- Goal and physique priorities can change ranking and FOR YOU qualification but must not change eligibility. Do not show a FOR YOU badge unless the shared recommendation logic actually qualifies the exercise.
+- All otherwise valid, compatible lower-ranked exercises must remain selectable.
+- Real hard filters only: target/body-part mapping, Gym/Home compatibility, actual equipment constraints, and exercise validity. Preserve already-fixed equipment filter behavior.
+
+NERD FACT AND SCIENCE SAFEGUARDS
+- Use the research report's genuine source register and JSON evidenceRefs.
+- Do not invent papers, authors, DOIs, URLs, or exercise-specific superiority claims.
+- Incline pressing may emphasize the clavicular/upper chest region; it does not isolate it. Evidence on exact angle and chronic regional hypertrophy is limited/inconsistent.
+- Do not claim cable fly, pec deck, dumbbell fly, decline pressing, or any grip guarantees more hypertrophy than alternatives without direct evidence.
+- Do not show science caveats on the main card; use careful plain language in Nerd Facts.
+
+SAFETY / PRESERVATION
+- Preserve authentication, Firebase rules, user data, existing personal split, saved programs, workout history, dashboard/tracker, and Back recommendations.
+- Do not modify onboarding/account ownership or perform data migrations.
+- Do not discard/revert unrelated changes or run destructive Git commands.
+- Keep duplicate prevention and current FOR YOU behavior.
+
+REGRESSION TESTS
+Add/update tests confirming:
+1. Chest and Upper Chest use the actual existing category IDs.
+2. Existing exercises update instead of duplicating; truly new ones are added only when needed.
+3. Flat pressing ranks as a strong Chest candidate for appropriate hypertrophy contexts.
+4. Moderate-incline presses rank strongly for Upper Chest emphasis where equipment fits.
+5. Changing goal/priority changes ranking contextually without changing exercise eligibility.
+6. Lower-ranked valid Chest alternatives remain selectable.
+7. FOR YOU badges still follow the shared qualification rules and remain stable after repeated renders.
+8. Nerd Fact source URLs are valid HTTPS links and point to relevant real sources.
+9. Gym/Home and equipment filters work correctly, including bodyweight exercise availability.
+10. Back, Lats, Upper Back, Chest, and Upper Chest mapping/ranking regressions are covered.
+
+VALIDATION
+Run TypeScript/lint checks, relevant tests, and the production build. Report eligible exercise counts before/after for Chest and Upper Chest; which exercise records were updated versus added; tests/build results; source fields corrected or remaining source caveats; and whether live-browser testing was actually performed. Never claim browser verification unless performed.
+
+Do not begin shoulders or other muscle groups. Complete Chest safely first. Do not rebuild the app from scratch.

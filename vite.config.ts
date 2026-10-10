@@ -89,6 +89,10 @@ export default defineConfig(() => {
       },
     },
     server: {
+      allowedHosts: [
+        'leeds-travelling-hebrew-purchased.trycloudflare.com',
+        'shadows-handle-smoke-languages.trycloudflare.com',
+      ],
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modify—file watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',

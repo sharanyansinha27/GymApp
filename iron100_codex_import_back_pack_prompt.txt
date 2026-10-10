@@ -1,0 +1,37 @@
+IRON 100 — IMPORT THE BACK RESEARCH PACK SAFELY
+
+Use these files as the research source of truth:
+- iron100_back_research_v1.md
+- iron100_back_exercise_seed_v1.json
+
+TASK
+Inspect the existing codebase first, then merge the Back research into the existing centralized exercise library and recommendation metadata. Do not blindly replace the current exercise library and do not create duplicate exercise records. Match existing exercises by ID and normalized name. Add a new record only if a truly missing exercise is needed and fits the current schema.
+
+PRODUCT UI REQUIREMENTS
+- Keep user-facing muscle/body-part names and exercise names simple.
+- Do not show research tiers, EMG language, anatomical jargon, numeric evidence scores, or internal target IDs on the exercise cards.
+- Exercise cards should retain the current clean UI and show short descriptions, Add/Remove, and Nerd Fact.
+- Nerd Facts should be plain language and generally 1–2 sentences. Source links must be real and clickable in the existing Nerd Fact modal.
+- If the project data schema requires richer research fields, store them internally or in a dedicated typed data file; don't expose all those fields in the UI.
+
+RECOMMENDATION REQUIREMENTS
+- Use the JSON's internal targets, candidate focus, evidence notes, and practical-fit metadata as inputs to the current muscle-specific recommendation ranker.
+- The ranking must be contextual to the selected body part/muscle and the user's goal/physique priority.
+- The research pack intentionally does not establish a universal #1 exercise. Do not present its candidate ordering as proof of absolute superiority.
+- Goal and physique priority can change ranking but must not change eligibility.
+- All valid, compatible exercises must remain selectable even when they rank lower or lack the FOR YOU label.
+- Hard filters remain genuine constraints only: selected target/body-part mapping, Gym/Home mode, equipment compatibility, and invalid/unavailable exercise records.
+- Treat EMG as acute activation evidence, not direct proof of hypertrophy.
+- Do not claim upper/lower lat isolation, universal wide-grip superiority, rhomboid isolation by rows, a pullover as a proven lat-isolation exercise, or deadlift/RDL as erector isolation.
+- Do not use exact weights from the research pack to override the existing score system unless an audit shows a clear reason and a test validates it. Prefer adapting the project's existing score model.
+
+REGRESSION / SAFETY
+- Preserve existing accounts, sign-in behavior, Firebase rules, personal split, saved programs, workout history, and dashboard/tracker data.
+- Do not change onboarding flow or existing program ownership logic as part of this task.
+- Keep duplicate-prevention behavior.
+- Keep bodyweight/equipment filtering behavior already fixed by the user; do not reintroduce the Incline Bench over-filter issue.
+- Add/update tests for: lat-focused ranking, upper-back ranking, upper-trap and lower-trap targeted accessories, lower-back compound versus targeted-extension roles, gear compatibility, rank changes with goal/priority, lower-ranked exercises still selectable, valid Nerd Fact source URLs, no duplicate exercises, and existing personal split preservation.
+- Verify the existing body-part category IDs are reused exactly; do not create conflicting taxonomy values.
+
+VALIDATION
+Run TypeScript checks, relevant tests, and production build. Report the actual eligible exercise count for Back, Lats, and Upper Back before/after; explain which records were updated versus added; report test/build output. Do not claim the live browser has been verified unless it actually has. Do not modify anything outside this task's scope.

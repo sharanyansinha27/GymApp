@@ -17,8 +17,8 @@ import {
 } from '../types';
 import {
   EXERCISE_LIBRARY,
+  getExerciseRecommendationPipeline,
   RankedExercise,
-  rankExercises,
 } from '../data/exerciseLibrary';
 import {
   calculateWeeklyPlannedVolume,
@@ -28,9 +28,13 @@ import {
   getNextOnboardingStep,
   getOnboardingStepProgress,
   getPreviousOnboardingStep,
+  groupExerciseRecommendations,
+  isValidWorkoutDayCount,
   ONBOARDING_STEP_COUNT,
   OnboardingStep,
 } from '../data/programOnboardingFlow';
+import { ExerciseRecommendationGroups } from './ExerciseRecommendationGroups';
+import { ForYouBadge } from './ForYouBadge';
 import { ExerciseFactModal } from './ExerciseFactModal';
 
 interface ProgramOnboardingProps {
@@ -214,12 +218,14 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
           selectedDayOfWeek,
         }
       : null;
-  const recommendations: RankedExercise[] =
+  const recommendationPipeline =
     recommendationProfile && selectedBodyPart
-      ? rankExercises(selectedBodyPart, recommendationProfile)
-      : [];
-  const personalizedRecommendations = recommendations.filter(({ isForYou }) => isForYou);
-  const moreRecommendations = recommendations.filter(({ isForYou }) => !isForYou);
+      ? getExerciseRecommendationPipeline(selectedBodyPart, recommendationProfile)
+      : null;
+  const recommendations: RankedExercise[] = recommendationPipeline?.ranked || [];
+  const recommendationGroups = selectedBodyPart
+    ? groupExerciseRecommendations(recommendations, selectedBodyPart)
+    : [];
   const weeklyPlannedVolume = calculateWeeklyPlannedVolume(days);
   const equipmentOptions = workoutMode
     ? [...new Set(
@@ -231,6 +237,7 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
   const selectedExerciseIds = new Set(
     selectedDay?.exercises.map((exercise) => exercise.exerciseId) || []
   );
+
   const selectedFact = EXERCISE_LIBRARY.find(
     (exercise) => exercise.id === nerdFactExerciseId
   );
@@ -272,7 +279,6 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
     );
     setWorkoutMode(mode);
     setAvailableEquipment((current) => [
-      'Bodyweight',
       ...current.filter((equipment) => equipment !== 'Bodyweight' && compatibleEquipment.has(equipment)),
     ]);
     setSaved(false);
@@ -311,8 +317,8 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
       setError('Choose a training goal and location before saving your schedule.');
       return;
     }
-    if (activeDays.length < 3 || activeDays.length > 7) {
-      setError('Choose between 3 and 7 workout days for your weekly schedule.');
+    if (!isValidWorkoutDayCount(activeDays.length)) {
+      setError('Choose between 1 and 7 workout days for your weekly schedule.');
       return;
     }
     if (
@@ -332,7 +338,7 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
       if (continueToExercises) {
         setSelectedDayOfWeek(activeDays[0].dayOfWeek);
         setSelectedBodyPart(activeDays[0].bodyParts[0]);
-        setStep('exercises');
+        setStep(getNextOnboardingStep(step));
       }
     } catch (saveError: unknown) {
       setError(
@@ -451,9 +457,6 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
     try {
       await onSaveDraft(goal, workoutMode, days, status);
       setSaved(true);
-      if (status === 'active') {
-        setStep('summary');
-      }
     } catch (saveError: unknown) {
       setError(
         saveError instanceof Error
@@ -466,7 +469,6 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
   };
 
   const savePreferencesAndContinue = async (
-    nextStep: OnboardingStep,
     requireWorkoutMode = false
   ) => {
     if (!goal || (requireWorkoutMode && !workoutMode)) return;
@@ -481,7 +483,7 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
         availableEquipment,
         physiquePriorities,
       });
-      setStep(nextStep);
+      setStep(getNextOnboardingStep(step));
     } catch (saveError: unknown) {
       setError(
         saveError instanceof Error
@@ -494,9 +496,7 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
   };
 
   const goBack = () => {
-    if (step === 'location') setStep('goal');
-    else if (step === 'program') setStep('location');
-    else if (step === 'schedule') setStep('program');
+    setStep(getPreviousOnboardingStep(step));
   };
 
   const renderExerciseCard = (
@@ -526,9 +526,7 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
               {exercise.name}
             </span>
             {isForYou && (
-              <span className="mt-1 inline-flex rounded-full border border-amber-400/50 bg-amber-400/10 px-2 py-1 text-[10px] font-bold tracking-wide text-amber-200">
-                FOR YOU ⭐
-              </span>
+              <ForYouBadge />
             )}
             <span className="mt-1 block text-xs text-emerald-300">{label}</span>
             <span className="mt-1 block text-xs text-slate-400">
@@ -600,7 +598,9 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
         <section className="rounded-2xl border border-slate-800 bg-[#111827] p-5 sm:p-8">
           <div className="mb-6 flex items-center justify-between gap-4">
             <p className="text-xs font-mono text-emerald-400">SET UP YOUR PROGRAM</p>
-            <p className="text-xs text-slate-400">Step {currentStep} of 4</p>
+            <p className="text-xs text-slate-400">
+              Step {currentStep} of {ONBOARDING_STEP_COUNT}
+            </p>
           </div>
 
           {step === 'goal' && (
@@ -682,7 +682,7 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
                 <button
                   type="button"
                   disabled={!goal || isSaving}
-                  onClick={() => void savePreferencesAndContinue('location')}
+                  onClick={() => void savePreferencesAndContinue()}
                   className="min-h-[44px] rounded-lg bg-emerald-500 px-5 font-semibold text-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isSaving ? 'Saving…' : 'Next'}
@@ -733,11 +733,12 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
                     Equipment you actually have
                   </legend>
                   <p className="text-xs leading-5 text-slate-400">
-                    Recommendations only include exercises whose required equipment is selected. Bodyweight is always available.
+                    Select equipment to filter recommendations. Bodyweight is always available; leave equipment unselected to browse all exercises for this training mode.
                   </p>
                   <div className="grid max-h-56 grid-cols-2 gap-2 overflow-y-auto rounded-xl border border-slate-700 p-3 sm:grid-cols-3">
                     {equipmentOptions.map((equipment) => {
-                      const selected = availableEquipment.includes(equipment);
+                      const selected =
+                        equipment === 'Bodyweight' || availableEquipment.includes(equipment);
                       return (
                         <label
                           key={equipment}
@@ -764,7 +765,7 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
                 <button
                   type="button"
                   disabled={!workoutMode || isSaving}
-                  onClick={() => void savePreferencesAndContinue('program', true)}
+                  onClick={() => void savePreferencesAndContinue(true)}
                   className="min-h-[44px] rounded-lg bg-emerald-500 px-5 font-semibold text-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isSaving ? 'Saving…' : 'Next'}
@@ -788,7 +789,7 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
               </div>
               <button
                 type="button"
-                onClick={() => setStep('schedule')}
+                onClick={() => setStep(getNextOnboardingStep(step))}
                 className="min-h-[100px] w-full rounded-xl border border-emerald-400 bg-emerald-400/10 p-5 text-left"
               >
                 <span className="block font-semibold text-white">Build My Own Split</span>
@@ -813,7 +814,7 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
               <div>
                 <h1 className="text-2xl font-bold text-white">Build your weekly split</h1>
                 <p className="mt-2 text-sm text-slate-400">
-                  Choose 3–7 workout days. Each day can be a rest day or a workout you name and configure.
+                  Choose 1–7 workout days based on your schedule. Any frequency guidance is a suggestion; each day can be a rest day or a workout you name and configure.
                 </p>
               </div>
               <p className="text-sm font-medium text-emerald-300">
@@ -1147,26 +1148,10 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
                       No exercises match your selected training mode and available equipment. Update the equipment selection in onboarding to see compatible options.
                     </p>
                   ) : (
-                    <>
-                      {personalizedRecommendations.length > 0 && (
-                        <div className="space-y-3">
-                          <h3 className="text-base font-bold text-amber-200">Recommended For You ⭐</h3>
-                          {personalizedRecommendations.map((item, index) =>
-                            renderExerciseCard(item, index + 1)
-                          )}
-                        </div>
-                      )}
-                      {moreRecommendations.length > 0 && (
-                        <div className="space-y-3">
-                          <h3 className="pt-2 text-base font-bold text-white">
-                            More {selectedBodyPart} Exercises
-                          </h3>
-                          {moreRecommendations.map((item, index) =>
-                            renderExerciseCard(item, personalizedRecommendations.length + index + 1)
-                          )}
-                        </div>
-                      )}
-                    </>
+                    <ExerciseRecommendationGroups
+                      groups={recommendationGroups}
+                      renderExerciseCard={renderExerciseCard}
+                    />
                   )}
                 </section>
               ) : (
@@ -1186,7 +1171,7 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
                 </p>
               )}
               <div className="flex flex-wrap justify-between gap-3">
-                <button type="button" onClick={() => setStep('schedule')} className="min-h-[44px] px-4 text-sm text-slate-300">
+                <button type="button" onClick={goBack} className="min-h-[44px] px-4 text-sm text-slate-300">
                   <ChevronUp className="mr-1 inline h-4 w-4" />
                   Back to schedule
                 </button>
@@ -1202,7 +1187,7 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
                   <button
                     type="button"
                     disabled={isSaving || isLoadingDraft}
-                    onClick={() => setStep('summary')}
+                    onClick={() => setStep(getNextOnboardingStep(step))}
                     className="min-h-[44px] rounded-lg bg-emerald-500 px-5 font-semibold text-slate-950 disabled:opacity-50"
                   >
                     Review program
@@ -1254,7 +1239,7 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
                         onClick={() => {
                           setSelectedDayOfWeek(day.dayOfWeek);
                           setSelectedBodyPart(day.bodyParts[0] || '');
-                          setStep('exercises');
+                          setStep(getPreviousOnboardingStep(step));
                         }}
                         className="min-h-[40px] rounded-lg border border-slate-600 px-3 text-xs font-semibold text-slate-200"
                       >
@@ -1300,7 +1285,7 @@ export const ProgramOnboarding: React.FC<ProgramOnboardingProps> = ({
               <div className="flex flex-wrap justify-between gap-3">
                 <button
                   type="button"
-                  onClick={() => setStep('exercises')}
+                  onClick={() => setStep(getPreviousOnboardingStep(step))}
                   className="min-h-[44px] px-4 text-sm text-slate-300"
                 >
                   <ChevronUp className="mr-1 inline h-4 w-4" />

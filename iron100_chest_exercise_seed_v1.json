@@ -1,0 +1,2077 @@
+{
+  "packId": "iron100-chest-v1",
+  "version": "1.0.0",
+  "status": "evidence-informed candidate seed; research reviewed for scientific accuracy; requires safe merge with existing exercise library and current app schema",
+  "uiPrinciples": [
+    "Keep user-facing category and exercise names familiar and short",
+    "Do not show internal evidence tiers, EMG detail, anatomical jargon, or numeric evidence scores on exercise cards",
+    "Nerd Facts should normally be 1–2 plain-language sentences",
+    "Keep genuine sources attached to Nerd Facts where supported",
+    "FOR YOU affects contextual ranking, never exercise eligibility",
+    "Do not claim a universal #1 exercise when direct comparative evidence is limited"
+  ],
+  "currentVisibleCategories": [
+    "Chest",
+    "Upper Chest"
+  ],
+  "internalTargets": {
+    "pectoralis_major_sternocostal": {
+      "simpleName": "Chest (internal target)",
+      "visibleTags": [
+        "Chest"
+      ],
+      "role": "Main chest pressing and fly target",
+      "notes": [
+        "Treat the pectoralis major as one large muscle with overlapping regional contributions, not as isolated chunks.",
+        "Do not create a separate lower-chest category unless it already exists in the app taxonomy and product rationale supports it."
+      ]
+    },
+    "pectoralis_major_clavicular": {
+      "simpleName": "Upper Chest",
+      "visibleTags": [
+        "Upper Chest",
+        "Chest"
+      ],
+      "role": "Upper-chest emphasis target",
+      "notes": [
+        "Incline pressing can shift regional demand toward the clavicular region, but does not isolate it.",
+        "Evidence on the exact best angle is mixed and much evidence is acute EMG rather than longitudinal hypertrophy."
+      ]
+    },
+    "triceps": {
+      "simpleName": "Triceps (secondary internal target)",
+      "visibleTags": [
+        "Chest"
+      ],
+      "role": "Secondary contributor in pressing",
+      "notes": [
+        "Do not count all chest-press sets as complete direct triceps sets without a separate volume model."
+      ]
+    },
+    "anterior_deltoid": {
+      "simpleName": "Front shoulders (secondary internal target)",
+      "visibleTags": [
+        "Chest",
+        "Upper Chest"
+      ],
+      "role": "Secondary contributor especially in higher inclines",
+      "notes": [
+        "Steeper bench inclines often increase anterior-deltoid involvement in acute activation studies."
+      ]
+    },
+    "pectoralis_minor": {
+      "simpleName": "Internal only",
+      "visibleTags": [],
+      "role": "Not a primary exercise-builder target in this pack",
+      "notes": [
+        "Do not label common chest presses as direct pectoralis-minor hypertrophy movements based on the evidence reviewed."
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "acsm-rt-overview-2026",
+      "title": "Resistance Training Prescription for Muscle Function, Hypertrophy, and Physical Performance in Healthy Adults: An Overview of Reviews",
+      "year": 2026,
+      "pmid": "41843416",
+      "doi": "10.1249/MSS.0000000000003897",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41843416/",
+      "type": "overview of 137 systematic reviews",
+      "sample_summary": ">30,000 participants across synthesized reviews",
+      "supports": [
+        "progressive resistance training robustly improves muscle size and strength",
+        "higher weekly volume tends to support hypertrophy; no single equipment type or many other programming variables consistently dominates",
+        "exercise choice should be integrated with an achievable, progressive program"
+      ],
+      "limitations": [
+        "not a chest-exercise head-to-head review",
+        "source search was current to October 2024 even though the review was published in 2026"
+      ]
+    },
+    {
+      "id": "incline-horizontal-training-2020",
+      "title": "Effects of Horizontal and Incline Bench Press on Neuromuscular Adaptations in Untrained Young Men",
+      "year": 2020,
+      "pmid": "32922646",
+      "doi": "10.70252/FDNB1158",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/32922646/",
+      "type": "8-week randomized training study",
+      "sample_summary": "47 untrained young men; three groups trained horizontal, incline, or combined bench press once weekly",
+      "supports": [
+        "all approaches improved strength",
+        "one measured pectoralis thickness site changed more in the incline-only group than in the other groups",
+        "flat and incline pressing can both be useful; exercise choice can affect regional outcomes"
+      ],
+      "limitations": [
+        "untrained male sample",
+        "once-weekly training protocol",
+        "regional site result does not prove incline is universally superior for total chest growth",
+        "modest study size and limited number of measured sites"
+      ]
+    },
+    {
+      "id": "five-bench-angles-emg-2020",
+      "title": "Effect of Five Bench Inclinations on the Electromyographic Activity of the Pectoralis Major, Anterior Deltoid, and Triceps Brachii during the Bench Press Exercise",
+      "year": 2020,
+      "pmid": "33049982",
+      "doi": "10.3390/ijerph17197339",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/33049982/",
+      "type": "acute EMG study",
+      "sample_summary": "30 trained adults tested at 0, 15, 30, 45, and 60 degrees",
+      "supports": [
+        "30-degree incline produced the highest upper-portion pectoralis EMG among the tested angles in this study",
+        "flat bench showed higher middle/lower pectoralis EMG than the steeper angles",
+        "anterior-deltoid activity rose at steeper inclines, especially above 45 degrees"
+      ],
+      "limitations": [
+        "acute EMG is not long-term hypertrophy evidence",
+        "other studies show partly inconsistent regional EMG patterns",
+        "angle, technique, equipment and participant characteristics affect results"
+      ],
+      "verifiedPublicationDetails": "2020 Oct 8;17(19):7339"
+    },
+    {
+      "id": "bench-angle-activation-2015",
+      "title": "Influence of bench angle on upper extremity muscular activation during bench press exercise",
+      "year": 2016,
+      "pmid": "25799093",
+      "doi": "10.1080/17461391.2015.1022605",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/25799093/",
+      "type": "acute EMG comparison",
+      "sample_summary": "14 resistance-trained men; flat, 30-degree, 45-degree and decline bench presses",
+      "supports": [
+        "incline angles changed some activation patterns during parts of the lift",
+        "whole-concentric upper-pectoral EMG was not different across all angles",
+        "flat pressing remained a reasonable broad pectoralis option"
+      ],
+      "limitations": [
+        "acute EMG only",
+        "some differences occurred only at particular portions of the concentric phase",
+        "not a longitudinal hypertrophy comparison"
+      ]
+    },
+    {
+      "id": "high-density-chest-regional-emg-2022",
+      "title": "Non-uniform excitation of the pectoralis major muscle during flat and inclined bench press exercises",
+      "year": 2022,
+      "pmid": "34644424",
+      "doi": "10.1111/sms.14082",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/34644424/",
+      "type": "high-density surface EMG study",
+      "sample_summary": "8 participants; multiple recording sites across the pectoralis major during flat and 45-degree bench press",
+      "supports": [
+        "regional excitation patterns shifted toward clavicular-region sites during incline compared with flat pressing",
+        "supports presenting incline as a possible upper-chest emphasis, not a separate-muscle isolation exercise"
+      ],
+      "limitations": [
+        "very small sample",
+        "acute activation, not longitudinal muscle growth",
+        "findings may not generalize to all techniques or inclinations"
+      ]
+    },
+    {
+      "id": "acute-regional-response-2022",
+      "title": "Non-uniform excitation of pectoralis major induced by changes in bench press inclination leads to uneven variations in the cross-sectional area measured by panoramic ultrasonography",
+      "year": 2022,
+      "pmid": "36334406",
+      "doi": "10.1016/j.jelekin.2022.102722",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/36334406/",
+      "type": "acute exercise study combining EMG and ultrasound",
+      "sample_summary": "13 men performed flat and 45-degree incline bench press sessions",
+      "supports": [
+        "flat and incline sessions showed different immediate regional responses in measured pectoralis heads",
+        "regional emphasis is plausible and worth considering when choosing a balanced exercise menu"
+      ],
+      "limitations": [
+        "post-exercise acute changes are not proof of chronic hypertrophy",
+        "small sample",
+        "do not interpret temporary architecture/CSA changes as permanent muscle growth"
+      ]
+    },
+    {
+      "id": "bench-press-emg-review-2017",
+      "title": "A systematic review of surface electromyography analyses of the bench press movement task",
+      "year": 2017,
+      "pmid": "28170449",
+      "doi": "10.1371/journal.pone.0171632",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/28170449/",
+      "type": "systematic review of acute EMG studies",
+      "sample_summary": "14 relevant studies included",
+      "supports": [
+        "pectoralis major and triceps are both substantially involved during bench pressing",
+        "bench press technique and testing conditions affect activation patterns"
+      ],
+      "limitations": [
+        "review concerns acute EMG, not exercise-specific long-term growth superiority",
+        "EMG amplitude cannot alone rank hypertrophy outcomes"
+      ],
+      "verifiedPublicationDetails": "2017 Feb 7;12(2):e0171632"
+    },
+    {
+      "id": "machine-v-freeweight-meta-2023",
+      "title": "Effect of free-weight vs. machine-based strength training on maximal strength, hypertrophy and jump performance: a systematic review and meta-analysis",
+      "year": 2023,
+      "pmid": "37582807",
+      "doi": "10.1186/s13102-023-00713-4",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37582807/",
+      "type": "systematic review and meta-analysis",
+      "sample_summary": "13 studies; 1,016 participants overall; only five studies reported hypertrophy",
+      "supports": [
+        "no significant overall hypertrophy difference detected between free-weight and machine-based training",
+        "equipment can be selected for preference, comfort, skill, availability, and progression"
+      ],
+      "limitations": [
+        "relatively few studies measured hypertrophy",
+        "not specific only to chest exercises",
+        "lack of detected difference is not proof every machine and free-weight movement is interchangeable"
+      ]
+    },
+    {
+      "id": "pushup-vs-bench-lowload-2017",
+      "title": "Low-load bench press and push-up induce similar muscle hypertrophy and strength gain",
+      "year": 2017,
+      "pmid": "29541130",
+      "doi": "10.1016/j.jesf.2017.06.003",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/29541130/",
+      "type": "8-week randomized training study",
+      "sample_summary": "18 young men; nine in each group; low-load bench press versus load-matched push-up variation, twice weekly",
+      "supports": [
+        "both progressive low-load bench press and appropriately scaled push-ups increased pectoralis thickness",
+        "bodyweight push-ups can be a useful chest option when difficulty is suitable"
+      ],
+      "limitations": [
+        "small sample",
+        "young men only",
+        "specific low-load matching protocol",
+        "does not establish that every push-up variant matches every bench press program"
+      ]
+    },
+    {
+      "id": "progressive-pushup-2018",
+      "title": "Effect of Progressive Calisthenic Push-up Training on Muscle Strength and Thickness",
+      "year": 2018,
+      "pmid": "29466268",
+      "doi": "10.1519/JSC.0000000000002345",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/29466268/",
+      "type": "4-week randomized training study",
+      "sample_summary": "23 moderately trained men; progressive push-ups compared with bench press; training three times weekly",
+      "supports": [
+        "progressive push-up variations can improve upper-body strength",
+        "calisthenic progressions are a valid alternative when load/difficulty progresses"
+      ],
+      "limitations": [
+        "short intervention",
+        "small sample",
+        "no significant within-group muscle-thickness differences were detected"
+      ],
+      "verifiedPublicationDetails": "2018 Mar;32(3):651-659"
+    },
+    {
+      "id": "exercise-variation-review-2022",
+      "title": "Does Varying Resistance Exercises Promote Superior Muscle Hypertrophy and Strength Gains? A Systematic Review",
+      "year": 2022,
+      "pmid": "35438660",
+      "doi": "10.1519/JSC.0000000000004258",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/35438660/",
+      "type": "systematic review",
+      "sample_summary": "8 studies; 241 participants; included studies were young men",
+      "supports": [
+        "systematic exercise variation may affect regional adaptations",
+        "exercise variation should be purposeful rather than random or excessively frequent"
+      ],
+      "limitations": [
+        "small evidence base",
+        "included samples were all young men",
+        "not chest-specific"
+      ]
+    },
+    {
+      "id": "rt-network-meta-2023",
+      "title": "Resistance training prescription for muscle strength and hypertrophy in healthy adults: a systematic review and Bayesian network meta-analysis",
+      "year": 2023,
+      "pmid": "37414459",
+      "doi": "10.1136/bjsports-2023-106807",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37414459/",
+      "type": "systematic review and Bayesian network meta-analysis",
+      "sample_summary": "119 studies and 3,364 participants in the hypertrophy network",
+      "supports": [
+        "many reasonable resistance-training prescriptions can produce hypertrophy",
+        "multiple-set programs rank well for hypertrophy; exercise choice exists within a broader progressive program"
+      ],
+      "limitations": [
+        "not chest-exercise-specific",
+        "rankings are aggregate across studies and not a universal recipe for every person"
+      ],
+      "verifiedPublicationDetails": "2023 Sep;57(18):1211-1220"
+    },
+    {
+      "id": "freeweight-machine-review-2021",
+      "title": "Machines and free weight exercises: a systematic review and meta-analysis comparing changes in muscle size, strength, and power",
+      "year": 2022,
+      "pmid": "34609100",
+      "doi": "10.23736/S0022-4707.21.12929-9",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/34609100/",
+      "type": "systematic review and meta-analysis",
+      "sample_summary": "Meta-analysis comparing adaptations from machines and free weights",
+      "supports": [
+        "no overall difference in muscle hypertrophy was detected between free weights and machines in included studies",
+        "strength gains are partly specific to the modality practiced"
+      ],
+      "limitations": [
+        "limited number of hypertrophy studies",
+        "not chest-specific"
+      ]
+    },
+    {
+      "id": "chestpress-machine-bodybuilders-2019",
+      "title": "Specific prime movers' excitation during free-weight bench press variations and chest press machine in competitive bodybuilders",
+      "year": 2019,
+      "pmid": "31397215",
+      "doi": "10.1080/17461391.2019.1655101",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/31397215/",
+      "type": "acute EMG comparison",
+      "sample_summary": "10 competitive bodybuilders; flat, incline, decline bench and chest-press machine",
+      "supports": [
+        "bench angle and tool changed regional pectoral, triceps, and deltoid activation patterns",
+        "machine and free-weight options have different feel/stability and activation profiles"
+      ],
+      "limitations": [
+        "small sample",
+        "acute EMG only",
+        "does not establish which exercise produces greater long-term hypertrophy"
+      ],
+      "verifiedPublicationDetails": "2020 Jun;20(5):571-579"
+    },
+    {
+      "id": "pec-major-anatomy-2023",
+      "title": "Anatomy, Shoulder and Upper Limb, Pectoral Muscles",
+      "year": 2023,
+      "pmid": null,
+      "doi": null,
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK545241/",
+      "type": "anatomy reference",
+      "sample_summary": "Clinical anatomy review of pectoral muscles",
+      "supports": [
+        "pectoralis major has clavicular and sternocostal/costal regions with overlapping functions",
+        "shoulder angle and movement direction relate to which regions contribute"
+      ],
+      "limitations": [
+        "anatomical reference, not exercise-comparison or hypertrophy trial"
+      ]
+    }
+  ],
+  "exercises": [
+    {
+      "id": "barbell-bench-press",
+      "name": "Barbell Bench Press",
+      "matchAliases": [
+        "Bench Press",
+        "Flat Barbell Bench Press",
+        "Barbell Flat Bench Press",
+        "Flat Bench Press"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "triceps",
+        "anterior_deltoid"
+      ],
+      "pattern": "horizontal_press",
+      "recommendationRole": "core_pick",
+      "candidateFocus": [
+        "overall_chest",
+        "strength"
+      ],
+      "equipment": [
+        "barbell",
+        "flat_bench",
+        "rack_or_spotter_setup"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "moderate"
+      },
+      "evidenceRefs": [
+        "bench-press-emg-review-2017",
+        "incline-horizontal-training-2020",
+        "rt-network-meta-2023"
+      ],
+      "finding": "Strong foundational press with substantial chest and triceps involvement; useful for standardized progressive overload.",
+      "nerdFact": [
+        "The bench press trains your chest along with your triceps and front shoulders. Consistent technique makes it easier to track progress."
+      ],
+      "limitations": [
+        "The bench press is not chest-isolation; triceps and anterior deltoids contribute."
+      ]
+    },
+    {
+      "id": "dumbbell-bench-press",
+      "name": "Dumbbell Bench Press",
+      "matchAliases": [
+        "Flat Dumbbell Press",
+        "Dumbbell Flat Bench Press",
+        "Flat DB Press"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "triceps",
+        "anterior_deltoid"
+      ],
+      "pattern": "horizontal_press",
+      "recommendationRole": "core_pick",
+      "candidateFocus": [
+        "overall_chest",
+        "hypertrophy"
+      ],
+      "equipment": [
+        "dumbbells",
+        "flat_bench"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "moderate"
+      },
+      "evidenceRefs": [
+        "bench-press-emg-review-2017",
+        "machine-v-freeweight-meta-2023"
+      ],
+      "finding": "Strong press option with independent dumbbell paths and readily adjustable loading.",
+      "nerdFact": [
+        "Dumbbells let each arm move independently, which may make it easier to find a comfortable pressing path. They still train the chest, triceps and front shoulders together."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "smith-machine-bench-press",
+      "name": "Smith Machine Bench Press",
+      "matchAliases": [
+        "Smith Bench Press",
+        "Smith Machine Flat Bench Press"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "triceps",
+        "anterior_deltoid"
+      ],
+      "pattern": "horizontal_press",
+      "recommendationRole": "strong_option",
+      "candidateFocus": [
+        "overall_chest",
+        "hypertrophy",
+        "stable_press"
+      ],
+      "equipment": [
+        "smith_machine",
+        "flat_bench"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "low_to_medium",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "machine-v-freeweight-meta-2023",
+        "bench-press-emg-review-2017"
+      ],
+      "finding": "Stable guided-path press that can suit users who prefer less bar-path stabilization.",
+      "nerdFact": [
+        "The Smith machine guides the bar along a fixed path. That can make the movement easier to repeat and progress for some lifters."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "chest-press-machine",
+      "name": "Chest Press Machine",
+      "matchAliases": [
+        "Machine Chest Press",
+        "Seated Chest Press",
+        "Chest Press",
+        "Converging Chest Press"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "triceps",
+        "anterior_deltoid"
+      ],
+      "pattern": "horizontal_press",
+      "recommendationRole": "core_pick",
+      "candidateFocus": [
+        "overall_chest",
+        "hypertrophy",
+        "stable_press"
+      ],
+      "equipment": [
+        "chest_press_machine"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "low",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "machine-v-freeweight-meta-2023",
+        "chestpress-machine-bodybuilders-2019"
+      ],
+      "finding": "High-practicality chest press; machine versus free-weight choice can be based on comfort, fit, access and progression rather than presumed universal hypertrophy superiority.",
+      "nerdFact": [
+        "A chest-press machine can build chest muscle just like free weights. Pick a machine that fits your body and lets you increase resistance with control."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "incline-barbell-bench-press",
+      "name": "Incline Barbell Bench Press",
+      "matchAliases": [
+        "Incline Bench Press",
+        "Incline Barbell Press",
+        "Barbell Incline Press"
+      ],
+      "visibleTags": [
+        "Chest",
+        "Upper Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_clavicular",
+        "pectoralis_major_sternocostal"
+      ],
+      "secondaryTargets": [
+        "anterior_deltoid",
+        "triceps"
+      ],
+      "pattern": "incline_press",
+      "recommendationRole": "upper_chest_pick",
+      "candidateFocus": [
+        "upper_chest",
+        "overall_chest",
+        "strength"
+      ],
+      "equipment": [
+        "barbell",
+        "incline_bench",
+        "rack_or_spotter_setup"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "moderate"
+      },
+      "evidenceRefs": [
+        "incline-horizontal-training-2020",
+        "five-bench-angles-emg-2020",
+        "high-density-chest-regional-emg-2022"
+      ],
+      "finding": "A strong upper-chest candidate: incline pressing can shift regional pectoral demand toward the clavicular region, while steeper angles increase shoulder contribution.",
+      "nerdFact": [
+        "A moderate incline changes the pressing angle and can place more emphasis on the upper chest. A very steep incline tends to involve the front shoulders more."
+      ],
+      "limitations": [
+        "Regional EMG evidence is not proof that it beats flat pressing for total chest growth."
+      ]
+    },
+    {
+      "id": "incline-dumbbell-press",
+      "name": "Incline Dumbbell Press",
+      "matchAliases": [
+        "Incline DB Press",
+        "Inclined Dumbbell Press",
+        "Incline Dumbbell Bench Press"
+      ],
+      "visibleTags": [
+        "Chest",
+        "Upper Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_clavicular",
+        "pectoralis_major_sternocostal"
+      ],
+      "secondaryTargets": [
+        "anterior_deltoid",
+        "triceps"
+      ],
+      "pattern": "incline_press",
+      "recommendationRole": "upper_chest_pick",
+      "candidateFocus": [
+        "upper_chest",
+        "hypertrophy"
+      ],
+      "equipment": [
+        "dumbbells",
+        "incline_bench"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "moderate"
+      },
+      "evidenceRefs": [
+        "incline-horizontal-training-2020",
+        "five-bench-angles-emg-2020",
+        "high-density-chest-regional-emg-2022"
+      ],
+      "finding": "Strong upper-chest candidate with independent dumbbell movement; good option when the user can control a repeatable comfortable path.",
+      "nerdFact": [
+        "Incline dumbbell presses train the chest from a different angle than flat presses. Set the bench at a moderate incline so the front shoulders do not take over the movement."
+      ],
+      "limitations": [
+        "Evidence supports altered regional emphasis, not complete upper-chest isolation."
+      ]
+    },
+    {
+      "id": "incline-machine-press",
+      "name": "Incline Machine Press",
+      "matchAliases": [
+        "Incline Chest Press Machine",
+        "Incline Press Machine",
+        "Inclined Machine Chest Press"
+      ],
+      "visibleTags": [
+        "Chest",
+        "Upper Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_clavicular",
+        "pectoralis_major_sternocostal"
+      ],
+      "secondaryTargets": [
+        "anterior_deltoid",
+        "triceps"
+      ],
+      "pattern": "incline_press",
+      "recommendationRole": "upper_chest_pick",
+      "candidateFocus": [
+        "upper_chest",
+        "hypertrophy",
+        "stable_press"
+      ],
+      "equipment": [
+        "incline_chest_press_machine"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "low",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "five-bench-angles-emg-2020",
+        "machine-v-freeweight-meta-2023",
+        "chestpress-machine-bodybuilders-2019"
+      ],
+      "finding": "Stable upper-chest press candidate. The particular seat, handle path and angle affect how the exercise feels and where effort is distributed.",
+      "nerdFact": [
+        "The incline machine press gives you an upper-chest pressing option with a guided path. Adjust the seat so the handles line up comfortably with your chest."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "smith-machine-incline-press",
+      "name": "Smith Machine Incline Press",
+      "matchAliases": [
+        "Smith Incline Bench Press",
+        "Incline Smith Press",
+        "Smith Machine Incline Bench Press"
+      ],
+      "visibleTags": [
+        "Chest",
+        "Upper Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_clavicular",
+        "pectoralis_major_sternocostal"
+      ],
+      "secondaryTargets": [
+        "anterior_deltoid",
+        "triceps"
+      ],
+      "pattern": "incline_press",
+      "recommendationRole": "strong_option",
+      "candidateFocus": [
+        "upper_chest",
+        "stable_press"
+      ],
+      "equipment": [
+        "smith_machine",
+        "incline_bench"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "low_to_medium",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "five-bench-angles-emg-2020",
+        "machine-v-freeweight-meta-2023"
+      ],
+      "finding": "Stable guided incline press option with room for progressive overload.",
+      "nerdFact": [
+        "A Smith-machine incline press combines the inclined pressing angle with a guided bar path. Adjust your setup to find a comfortable shoulder position."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "incline-cable-press",
+      "name": "Incline Cable Chest Press",
+      "matchAliases": [
+        "Cable Incline Press",
+        "Low Cable Incline Press"
+      ],
+      "visibleTags": [
+        "Chest",
+        "Upper Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_clavicular",
+        "pectoralis_major_sternocostal"
+      ],
+      "secondaryTargets": [
+        "anterior_deltoid",
+        "triceps"
+      ],
+      "pattern": "incline_press",
+      "recommendationRole": "strong_option",
+      "candidateFocus": [
+        "upper_chest",
+        "hypertrophy"
+      ],
+      "equipment": [
+        "cable_machine",
+        "bench"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "acsm-rt-overview-2026"
+      ],
+      "finding": "Cable pressing is a practical alternative when a suitable bench/cable setup permits a stable, comfortable path.",
+      "nerdFact": [
+        "Cables let you adjust the pressing path to your body and setup. The important part is a controlled movement you can progress over time."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "decline-bench-press",
+      "name": "Decline Bench Press",
+      "matchAliases": [
+        "Decline Barbell Bench Press",
+        "Decline Barbell Press"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal"
+      ],
+      "secondaryTargets": [
+        "triceps",
+        "anterior_deltoid"
+      ],
+      "pattern": "decline_press",
+      "recommendationRole": "strong_option",
+      "candidateFocus": [
+        "overall_chest",
+        "pressing_variation"
+      ],
+      "equipment": [
+        "barbell",
+        "decline_bench",
+        "rack_or_spotter_setup"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "moderate"
+      },
+      "evidenceRefs": [
+        "bench-press-emg-review-2017",
+        "chestpress-machine-bodybuilders-2019"
+      ],
+      "finding": "Valid chest pressing variation; it can be offered as an option without claiming that it uniquely isolates the lower chest.",
+      "nerdFact": [
+        "Decline pressing changes the angle of the movement, but it does not isolate a separate lower-chest muscle. Treat it as one useful variation, not a requirement."
+      ],
+      "limitations": [
+        "Direct long-term head-to-head hypertrophy evidence for decline versus flat pressing is limited."
+      ]
+    },
+    {
+      "id": "dumbbell-decline-press",
+      "name": "Dumbbell Decline Press",
+      "matchAliases": [
+        "Decline Dumbbell Press",
+        "Decline DB Press"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal"
+      ],
+      "secondaryTargets": [
+        "triceps",
+        "anterior_deltoid"
+      ],
+      "pattern": "decline_press",
+      "recommendationRole": "alternative",
+      "candidateFocus": [
+        "overall_chest",
+        "pressing_variation"
+      ],
+      "equipment": [
+        "dumbbells",
+        "decline_bench"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "moderate"
+      },
+      "evidenceRefs": [
+        "bench-press-emg-review-2017"
+      ],
+      "finding": "A selectable chest press variation; use when the setup is comfortable and controllable.",
+      "nerdFact": [
+        "Decline dumbbell pressing trains the chest through a declined pressing angle. It is an option, not a movement everyone needs."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "chest-dip",
+      "name": "Chest Dip",
+      "matchAliases": [
+        "Dips for Chest",
+        "Forward-Leaning Dip"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal"
+      ],
+      "secondaryTargets": [
+        "triceps",
+        "anterior_deltoid"
+      ],
+      "pattern": "dip_press",
+      "recommendationRole": "strong_option",
+      "candidateFocus": [
+        "overall_chest",
+        "bodyweight_strength"
+      ],
+      "equipment": [
+        "dip_station"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "medium_to_high",
+        "fatigueDemand": "moderate"
+      },
+      "evidenceRefs": [
+        "bench-press-emg-review-2017",
+        "acsm-rt-overview-2026"
+      ],
+      "finding": "A compound chest/triceps option when the user has adequate strength and the shoulder position feels comfortable. A forward torso lean often changes the movement toward more chest contribution, but anatomy and technique vary.",
+      "nerdFact": [
+        "Chest dips train both chest and triceps. Use a range that feels controlled and comfortable for your shoulders; dips are optional, not compulsory."
+      ],
+      "limitations": [
+        "Direct comparison with other chest exercises for long-term hypertrophy is limited."
+      ]
+    },
+    {
+      "id": "assisted-chest-dip",
+      "name": "Assisted Chest Dip",
+      "matchAliases": [
+        "Assisted Dip",
+        "Assisted Dips",
+        "Assisted Parallel Bar Dip"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal"
+      ],
+      "secondaryTargets": [
+        "triceps",
+        "anterior_deltoid"
+      ],
+      "pattern": "dip_press",
+      "recommendationRole": "alternative",
+      "candidateFocus": [
+        "overall_chest",
+        "scalable_bodyweight"
+      ],
+      "equipment": [
+        "assisted_dip_machine"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "low_to_medium",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "acsm-rt-overview-2026"
+      ],
+      "finding": "Makes the dip pattern more scalable for users who cannot yet perform controlled bodyweight repetitions.",
+      "nerdFact": [
+        "The assistance machine reduces the amount of bodyweight you lift. You can gradually reduce assistance as your strength improves."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "push-up",
+      "name": "Push-Up",
+      "matchAliases": [
+        "Pushups",
+        "Standard Push-Up",
+        "Bodyweight Push-Up"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "triceps",
+        "anterior_deltoid"
+      ],
+      "pattern": "horizontal_press",
+      "recommendationRole": "core_pick",
+      "candidateFocus": [
+        "overall_chest",
+        "home",
+        "bodyweight"
+      ],
+      "equipment": [
+        "bodyweight"
+      ],
+      "compatibleModes": [
+        "home",
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "medium",
+        "skillDemand": "low",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "pushup-vs-bench-lowload-2017",
+        "progressive-pushup-2018"
+      ],
+      "finding": "Evidence supports progressive push-up training as a legitimate chest-building option when the variation is challenging and progressed.",
+      "nerdFact": [
+        "Push-ups can build chest muscle. To keep improving, choose a version that is challenging and progress it as you get stronger."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "weighted-push-up",
+      "name": "Weighted Push-Up",
+      "matchAliases": [
+        "Loaded Push-Up",
+        "Weight-Plate Push-Up"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "triceps",
+        "anterior_deltoid"
+      ],
+      "pattern": "horizontal_press",
+      "recommendationRole": "strong_option",
+      "candidateFocus": [
+        "overall_chest",
+        "home_or_gym_progression"
+      ],
+      "equipment": [
+        "bodyweight",
+        "weight_plate_or_loaded_vest"
+      ],
+      "compatibleModes": [
+        "home",
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "moderate"
+      },
+      "evidenceRefs": [
+        "pushup-vs-bench-lowload-2017",
+        "progressive-pushup-2018"
+      ],
+      "finding": "Adds a way to progress push-ups when standard repetitions are no longer sufficiently challenging.",
+      "nerdFact": [
+        "Adding a secure load can make push-ups harder as you grow stronger. Use a safe setup and keep the movement controlled."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "incline-push-up",
+      "name": "Incline Push-Up",
+      "matchAliases": [
+        "Hands-Elevated Push-Up",
+        "Elevated Hands Push-Up"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "triceps",
+        "anterior_deltoid"
+      ],
+      "pattern": "horizontal_press",
+      "recommendationRole": "home_option",
+      "candidateFocus": [
+        "overall_chest",
+        "beginner",
+        "home"
+      ],
+      "equipment": [
+        "bodyweight",
+        "stable_elevated_surface"
+      ],
+      "compatibleModes": [
+        "home",
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "medium",
+        "skillDemand": "low",
+        "fatigueDemand": "low"
+      },
+      "evidenceRefs": [
+        "pushup-vs-bench-lowload-2017",
+        "progressive-pushup-2018"
+      ],
+      "finding": "Useful easier push-up progression; raise hands on a stable surface and lower the surface as strength improves.",
+      "nerdFact": [
+        "Placing your hands on a stable raised surface makes push-ups easier. Lower the surface gradually as you become stronger."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "decline-push-up",
+      "name": "Decline Push-Up",
+      "matchAliases": [
+        "Feet-Elevated Push-Up",
+        "Feet Raised Push-Up"
+      ],
+      "visibleTags": [
+        "Chest",
+        "Upper Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_clavicular",
+        "pectoralis_major_sternocostal"
+      ],
+      "secondaryTargets": [
+        "anterior_deltoid",
+        "triceps"
+      ],
+      "pattern": "decline_bodyweight_press",
+      "recommendationRole": "strong_option",
+      "candidateFocus": [
+        "upper_chest",
+        "bodyweight"
+      ],
+      "equipment": [
+        "bodyweight",
+        "stable_elevated_surface"
+      ],
+      "compatibleModes": [
+        "home",
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "medium",
+        "skillDemand": "medium",
+        "fatigueDemand": "moderate"
+      },
+      "evidenceRefs": [
+        "five-bench-angles-emg-2020",
+        "pushup-vs-bench-lowload-2017"
+      ],
+      "finding": "Feet-elevated push-ups change the pressing angle; the exact muscle emphasis depends on body position and movement. Do not claim they isolate upper chest.",
+      "nerdFact": [
+        "Raising your feet changes the push-up angle and makes it harder for many people. Use a stable surface and a position you can control."
+      ],
+      "limitations": [
+        "Direct evidence comparing upper-chest hypertrophy from push-up angles is limited."
+      ]
+    },
+    {
+      "id": "cable-chest-press",
+      "name": "Cable Chest Press",
+      "matchAliases": [
+        "Standing Cable Chest Press",
+        "Dual Cable Chest Press"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "triceps",
+        "anterior_deltoid"
+      ],
+      "pattern": "horizontal_press",
+      "recommendationRole": "strong_option",
+      "candidateFocus": [
+        "overall_chest",
+        "cable"
+      ],
+      "equipment": [
+        "cable_machine",
+        "handles"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "acsm-rt-overview-2026",
+        "machine-v-freeweight-meta-2023"
+      ],
+      "finding": "A practical press option if the cable setup allows a stable stance and repeatable range. No evidence establishes it as universally better than bench pressing.",
+      "nerdFact": [
+        "Cable chest presses let you choose a comfortable arm path. Keep your torso steady and use a range you can repeat consistently."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "single-arm-cable-chest-press",
+      "name": "Single-Arm Cable Chest Press",
+      "matchAliases": [
+        "Single Arm Cable Press",
+        "Unilateral Cable Chest Press"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "triceps",
+        "anterior_deltoid",
+        "core_stabilizers"
+      ],
+      "pattern": "unilateral_horizontal_press",
+      "recommendationRole": "alternative",
+      "candidateFocus": [
+        "overall_chest",
+        "unilateral_control"
+      ],
+      "equipment": [
+        "cable_machine",
+        "single_handle"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "acsm-rt-overview-2026"
+      ],
+      "finding": "Unilateral press provides an alternative arm path and also requires the trunk to resist rotation. It is not proven to grow the chest more than bilateral presses.",
+      "nerdFact": [
+        "Training one arm at a time can help you focus on a comfortable pressing path. Keep your torso from twisting as you press."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "cable-fly",
+      "name": "Cable Fly",
+      "matchAliases": [
+        "Cable Crossover",
+        "Standing Cable Fly",
+        "Cable Chest Fly",
+        "Cable Crossovers"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "anterior_deltoid"
+      ],
+      "pattern": "horizontal_adduction",
+      "recommendationRole": "accessory",
+      "candidateFocus": [
+        "overall_chest",
+        "fly",
+        "cable"
+      ],
+      "equipment": [
+        "cable_machine",
+        "handles"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "acsm-rt-overview-2026"
+      ],
+      "finding": "Direct chest accessory with adjustable cable position; strong practical fit, but limited direct long-term trials establish superiority over presses or other fly options.",
+      "nerdFact": [
+        "Cable flyes train the chest as your arms move across your body. Set the cables so you can stretch and squeeze comfortably without using momentum."
+      ],
+      "limitations": [
+        "Exercise-specific hypertrophy comparisons among fly variations are sparse."
+      ]
+    },
+    {
+      "id": "high-to-low-cable-fly",
+      "name": "High-to-Low Cable Fly",
+      "matchAliases": [
+        "High Cable Fly",
+        "High-to-Low Cable Crossover",
+        "High Pulley Cable Fly"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "anterior_deltoid"
+      ],
+      "pattern": "angled_horizontal_adduction",
+      "recommendationRole": "accessory",
+      "candidateFocus": [
+        "overall_chest",
+        "cable_fly"
+      ],
+      "equipment": [
+        "cable_machine",
+        "handles"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "acsm-rt-overview-2026"
+      ],
+      "finding": "Changes the line of pull for variation; do not label as a proven lower-chest isolator.",
+      "nerdFact": [
+        "High-to-low cable flyes change the direction your hands travel. They still train the chest as a whole, and are not proven to isolate one chest region."
+      ],
+      "limitations": [
+        "Direct regional hypertrophy evidence is limited."
+      ]
+    },
+    {
+      "id": "low-to-high-cable-fly",
+      "name": "Low-to-High Cable Fly",
+      "matchAliases": [
+        "Low Cable Fly",
+        "Low-to-High Cable Crossover",
+        "Low Pulley Cable Fly"
+      ],
+      "visibleTags": [
+        "Chest",
+        "Upper Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_clavicular",
+        "pectoralis_major_sternocostal"
+      ],
+      "secondaryTargets": [
+        "anterior_deltoid"
+      ],
+      "pattern": "upward_angled_horizontal_adduction",
+      "recommendationRole": "accessory",
+      "candidateFocus": [
+        "upper_chest",
+        "cable_fly"
+      ],
+      "equipment": [
+        "cable_machine",
+        "handles"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "five-bench-angles-emg-2020",
+        "acsm-rt-overview-2026"
+      ],
+      "finding": "A reasonable upper-chest accessory based on arm path and practical targeting; direct long-term trials proving regional superiority are limited.",
+      "nerdFact": [
+        "Low-to-high cable flyes move your hands upward across your body. This can be used as an upper-chest-focused variation, but it does not isolate the upper chest."
+      ],
+      "limitations": [
+        "Recommendation is based mainly on movement mechanics and practical fit, not direct exercise-specific hypertrophy trials."
+      ]
+    },
+    {
+      "id": "pec-deck-fly",
+      "name": "Pec Deck Fly",
+      "matchAliases": [
+        "Pec Deck",
+        "Machine Pec Fly",
+        "Seated Pec Deck",
+        "Butterfly Machine"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "anterior_deltoid"
+      ],
+      "pattern": "horizontal_adduction_machine",
+      "recommendationRole": "accessory",
+      "candidateFocus": [
+        "overall_chest",
+        "fly",
+        "stable_isolation"
+      ],
+      "equipment": [
+        "pec_deck_machine"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "low",
+        "fatigueDemand": "low"
+      },
+      "evidenceRefs": [
+        "acsm-rt-overview-2026",
+        "machine-v-freeweight-meta-2023"
+      ],
+      "finding": "Stable chest accessory that can be easy to standardize and progressively load; not proven universally superior to cable or dumbbell flyes.",
+      "nerdFact": [
+        "The pec deck lets you train the chest without needing to balance dumbbells. Adjust the seat so the handles or pads line up comfortably with your chest."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "dumbbell-fly",
+      "name": "Dumbbell Fly",
+      "matchAliases": [
+        "Flat Dumbbell Fly",
+        "Dumbbell Chest Fly",
+        "DB Fly"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "anterior_deltoid"
+      ],
+      "pattern": "horizontal_adduction_freeweight",
+      "recommendationRole": "accessory",
+      "candidateFocus": [
+        "overall_chest",
+        "fly"
+      ],
+      "equipment": [
+        "dumbbells",
+        "flat_bench"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "low_to_medium",
+        "progression": "medium",
+        "skillDemand": "medium_to_high",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "acsm-rt-overview-2026"
+      ],
+      "finding": "Chest accessory with a different resistance profile from presses; control the range and avoid forcing a deep shoulder stretch.",
+      "nerdFact": [
+        "Dumbbell flyes train the chest as your arms open and come together. Use a comfortable stretch instead of forcing your shoulders into an extreme position."
+      ],
+      "limitations": [
+        "Direct head-to-head hypertrophy evidence versus presses and other fly types is limited."
+      ]
+    },
+    {
+      "id": "incline-dumbbell-fly",
+      "name": "Incline Dumbbell Fly",
+      "matchAliases": [
+        "Incline DB Fly",
+        "Incline Chest Fly"
+      ],
+      "visibleTags": [
+        "Chest",
+        "Upper Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_clavicular",
+        "pectoralis_major_sternocostal"
+      ],
+      "secondaryTargets": [
+        "anterior_deltoid"
+      ],
+      "pattern": "incline_horizontal_adduction",
+      "recommendationRole": "accessory",
+      "candidateFocus": [
+        "upper_chest",
+        "fly"
+      ],
+      "equipment": [
+        "dumbbells",
+        "incline_bench"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "low_to_medium",
+        "progression": "medium",
+        "skillDemand": "medium_to_high",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "five-bench-angles-emg-2020",
+        "acsm-rt-overview-2026"
+      ],
+      "finding": "An upper-chest-focused accessory candidate based on bench angle and movement line, without evidence for guaranteed regional isolation.",
+      "nerdFact": [
+        "Incline dumbbell flyes use an inclined bench to change the chest movement angle. Keep the stretch comfortable and use controlled weights."
+      ],
+      "limitations": [
+        "Direct regional hypertrophy comparisons are limited."
+      ]
+    },
+    {
+      "id": "machine-chest-fly",
+      "name": "Machine Chest Fly",
+      "matchAliases": [
+        "Machine Fly",
+        "Seated Chest Fly Machine",
+        "Chest Fly Machine"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "anterior_deltoid"
+      ],
+      "pattern": "horizontal_adduction_machine",
+      "recommendationRole": "accessory",
+      "candidateFocus": [
+        "overall_chest",
+        "fly",
+        "stable_isolation"
+      ],
+      "equipment": [
+        "chest_fly_machine"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "low",
+        "fatigueDemand": "low"
+      },
+      "evidenceRefs": [
+        "acsm-rt-overview-2026",
+        "machine-v-freeweight-meta-2023"
+      ],
+      "finding": "Machine fly variation for users who prefer a stable guided movement; setup and comfort matter.",
+      "nerdFact": [
+        "A chest-fly machine makes it easier to repeat the same path each set. Adjust the machine to fit your shoulder position and range."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "barbell-floor-press",
+      "name": "Barbell Floor Press",
+      "matchAliases": [
+        "Floor Press",
+        "Barbell Floor Press",
+        "Dumbbell Floor Press"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "triceps",
+        "anterior_deltoid"
+      ],
+      "pattern": "limited_rom_press",
+      "recommendationRole": "alternative",
+      "candidateFocus": [
+        "overall_chest",
+        "strength",
+        "limited_rom"
+      ],
+      "equipment": [
+        "barbell",
+        "floor",
+        "rack_or_spotter_setup"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "moderate"
+      },
+      "evidenceRefs": [
+        "acsm-rt-overview-2026"
+      ],
+      "finding": "A valid press variation with a shorter bottom range because the upper arms contact the floor; it can be useful for comfort or strength-specific goals but is not the default for full chest range.",
+      "nerdFact": [
+        "The floor press stops your upper arms at the floor, so it uses a shorter range than a typical bench press. It can be a useful alternative, depending on your goal and comfort."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "dumbbell-squeeze-press",
+      "name": "Dumbbell Squeeze Press",
+      "matchAliases": [
+        "Hex Press",
+        "Dumbbell Crush Press",
+        "DB Squeeze Press"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "triceps",
+        "anterior_deltoid"
+      ],
+      "pattern": "horizontal_press_adduction",
+      "recommendationRole": "alternative",
+      "candidateFocus": [
+        "overall_chest",
+        "pressing_variation"
+      ],
+      "equipment": [
+        "dumbbells",
+        "flat_bench"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "medium",
+        "skillDemand": "medium",
+        "fatigueDemand": "moderate"
+      },
+      "evidenceRefs": [
+        "acsm-rt-overview-2026"
+      ],
+      "finding": "A variation for preference and variety; extra inward squeezing is not proven to confer greater chest hypertrophy.",
+      "nerdFact": [
+        "The squeeze press asks you to keep the dumbbells pressed toward each other as you press. It is a variation, not a proven shortcut to extra chest growth."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "band-chest-press",
+      "name": "Resistance Band Chest Press",
+      "matchAliases": [
+        "Band Chest Press",
+        "Resistance-Band Press"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "triceps",
+        "anterior_deltoid"
+      ],
+      "pattern": "horizontal_press",
+      "recommendationRole": "home_option",
+      "candidateFocus": [
+        "overall_chest",
+        "home",
+        "resistance_band"
+      ],
+      "equipment": [
+        "resistance_band",
+        "secure_anchor"
+      ],
+      "compatibleModes": [
+        "home",
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "medium",
+        "skillDemand": "low",
+        "fatigueDemand": "low"
+      },
+      "evidenceRefs": [
+        "acsm-rt-overview-2026"
+      ],
+      "finding": "Home option when a suitable band/anchor allows progressive resistance and a safe setup.",
+      "nerdFact": [
+        "Resistance bands can provide a chest-press option at home. Secure the band safely and use a version that remains challenging as you improve."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "band-chest-fly",
+      "name": "Resistance Band Chest Fly",
+      "matchAliases": [
+        "Band Fly",
+        "Resistance-Band Chest Fly"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "anterior_deltoid"
+      ],
+      "pattern": "horizontal_adduction",
+      "recommendationRole": "home_option",
+      "candidateFocus": [
+        "overall_chest",
+        "home",
+        "fly"
+      ],
+      "equipment": [
+        "resistance_band",
+        "secure_anchor"
+      ],
+      "compatibleModes": [
+        "home",
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "medium",
+        "skillDemand": "low",
+        "fatigueDemand": "low"
+      },
+      "evidenceRefs": [
+        "acsm-rt-overview-2026"
+      ],
+      "finding": "Accessible chest accessory when equipment is limited; resistance curve and band tension depend on the setup.",
+      "nerdFact": [
+        "A resistance-band fly brings your arms across your body to train the chest. Make sure the band and anchor are secure before you start."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "barbell-incline-low-angle-press",
+      "name": "Low-Incline Barbell Press",
+      "matchAliases": [
+        "Low Incline Press",
+        "15 Degree Incline Barbell Press",
+        "20 Degree Incline Press"
+      ],
+      "visibleTags": [
+        "Chest",
+        "Upper Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_clavicular",
+        "pectoralis_major_sternocostal"
+      ],
+      "secondaryTargets": [
+        "anterior_deltoid",
+        "triceps"
+      ],
+      "pattern": "low_incline_press",
+      "recommendationRole": "upper_chest_pick",
+      "candidateFocus": [
+        "upper_chest",
+        "overall_chest"
+      ],
+      "equipment": [
+        "barbell",
+        "adjustable_incline_bench",
+        "rack_or_spotter_setup"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "moderate"
+      },
+      "evidenceRefs": [
+        "five-bench-angles-emg-2020",
+        "incline-horizontal-training-2020"
+      ],
+      "finding": "Low-to-moderate incline is a useful starting candidate for upper-chest emphasis; no single exact angle is mandatory or universally optimal.",
+      "nerdFact": [
+        "A low incline changes the press slightly toward the upper chest while usually avoiding the front-shoulder emphasis of a very steep angle."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "dumbbell-low-incline-press",
+      "name": "Low-Incline Dumbbell Press",
+      "matchAliases": [
+        "Low Incline DB Press",
+        "Low Incline Dumbbell Bench"
+      ],
+      "visibleTags": [
+        "Chest",
+        "Upper Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_clavicular",
+        "pectoralis_major_sternocostal"
+      ],
+      "secondaryTargets": [
+        "anterior_deltoid",
+        "triceps"
+      ],
+      "pattern": "low_incline_press",
+      "recommendationRole": "upper_chest_pick",
+      "candidateFocus": [
+        "upper_chest",
+        "hypertrophy"
+      ],
+      "equipment": [
+        "dumbbells",
+        "adjustable_incline_bench"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "medium",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "moderate"
+      },
+      "evidenceRefs": [
+        "five-bench-angles-emg-2020",
+        "incline-horizontal-training-2020"
+      ],
+      "finding": "Practical low-incline press variant for upper-chest emphasis. Keep it only as a distinct record if the current app does not already represent it as an adjustable setup option.",
+      "nerdFact": [
+        "A small bench incline can shift some work toward the upper chest. If your bench adjusts, you may not need a separate exercise record for every angle."
+      ],
+      "limitations": [
+        "Do not create duplicate records for different bench-angle settings if the current library treats angle as a setup parameter."
+      ]
+    },
+    {
+      "id": "chest-press-plate-loaded",
+      "name": "Plate-Loaded Chest Press",
+      "matchAliases": [
+        "Plate Loaded Chest Press",
+        "Iso-Lateral Chest Press"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal",
+        "pectoralis_major_clavicular"
+      ],
+      "secondaryTargets": [
+        "triceps",
+        "anterior_deltoid"
+      ],
+      "pattern": "horizontal_press",
+      "recommendationRole": "strong_option",
+      "candidateFocus": [
+        "overall_chest",
+        "stable_press"
+      ],
+      "equipment": [
+        "plate_loaded_chest_press_machine",
+        "weight_plates"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "low",
+        "fatigueDemand": "low_to_moderate"
+      },
+      "evidenceRefs": [
+        "machine-v-freeweight-meta-2023",
+        "chestpress-machine-bodybuilders-2019"
+      ],
+      "finding": "Another machine chest-press style. Keep as an alias to an existing machine press if the library does not distinguish the machine type.",
+      "nerdFact": [
+        "Different chest-press machines can follow different paths. Choose one that fits well and lets you train hard with control."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    },
+    {
+      "id": "close-grip-bench-press",
+      "name": "Close-Grip Bench Press",
+      "matchAliases": [
+        "Close Grip Barbell Bench Press",
+        "Narrow-Grip Bench Press"
+      ],
+      "visibleTags": [
+        "Chest"
+      ],
+      "primaryTargets": [
+        "pectoralis_major_sternocostal"
+      ],
+      "secondaryTargets": [
+        "triceps",
+        "anterior_deltoid"
+      ],
+      "pattern": "close_grip_horizontal_press",
+      "recommendationRole": "alternative",
+      "candidateFocus": [
+        "strength",
+        "compound_press"
+      ],
+      "equipment": [
+        "barbell",
+        "flat_bench",
+        "rack_or_spotter_setup"
+      ],
+      "compatibleModes": [
+        "gym"
+      ],
+      "practicalFit": {
+        "stability": "high",
+        "progression": "high",
+        "skillDemand": "medium",
+        "fatigueDemand": "moderate"
+      },
+      "evidenceRefs": [
+        "bench-press-emg-review-2017",
+        "bench-angle-activation-2015"
+      ],
+      "finding": "Valid compound press, typically more triceps-focused than a moderate-grip chest press. Keep selectable but do not rank as the default chest-specific match for everyone.",
+      "nerdFact": [
+        "A closer grip usually makes the triceps work harder relative to a wider or moderate grip. It still trains the chest, but it is often chosen for triceps and pressing strength."
+      ],
+      "limitations": [
+        "Exercise-specific long-term hypertrophy superiority over other valid options has not been established."
+      ]
+    }
+  ],
+  "rankingGuardrails": [
+    "Chest is the broad target; Upper Chest is a regional emphasis, not a separate isolated muscle.",
+    "Use the existing visible category identifiers exactly; do not invent near-duplicate taxonomy IDs.",
+    "Primary pressing candidates for Chest include flat barbell/dumbbell presses, compatible chest-press machines, and progressive push-up options.",
+    "Upper Chest recommendations should favor suitable moderate-incline presses when the user's goal and equipment fit; retain flat presses and all other valid alternatives as selectable.",
+    "Do not make 30 degrees or any exact incline mandatory; 30 degrees showed more upper-portion EMG in one study, while evidence across studies is not fully consistent.",
+    "Do not claim EMG proves long-term hypertrophy superiority.",
+    "Do not claim cable fly, pec deck, or dumbbell fly is universally superior to presses; treat flyes as useful complementary options where equipment and user preference fit.",
+    "Do not claim free weights are universally better than machines for hypertrophy; current meta-analysis did not detect an overall hypertrophy difference.",
+    "Push-ups are valid chest options when suitably challenging and progressively scaled; do not suppress them because they are bodyweight.",
+    "Goal and physique priority can modify contextual scores and FOR YOU qualification but never act as hard exercise filters.",
+    "Map internal targets to existing library records by stable ID and normalized name/aliases; update matches rather than duplicate.",
+    "Some exercise rows are candidate aliases or angle variants. If the app represents bench angle as a setup parameter, merge these aliases into the existing exercise rather than create duplicates.",
+    "Every equipment requirement must reflect real equipment; do not bring back the previously fixed equipment over-filter bug.",
+    "A FOR YOU badge should come from the shared existing recommendation logic; do not hard-code the badge to an exercise name."
+  ]
+}

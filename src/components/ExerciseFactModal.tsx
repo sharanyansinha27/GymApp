@@ -172,25 +172,30 @@ export const ExerciseFactModal: React.FC<ExerciseFactModalProps> = ({
                     {index + 1}. {source.title}
                   </p>
                   <p className="mt-1 text-xs leading-5 text-slate-400">
-                    {source.authors}. {source.journal}, {source.year}. DOI: {source.doi}.
+                    {source.authors ? `${source.authors}. ` : ''}
+                    {source.journal ? `${source.journal}, ` : ''}
+                    {source.year}
+                    {source.doi ? `. DOI: ${source.doi}.` : '.'}
                   </p>
                   <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs">
                     <a
-                      href={source.pubmedUrl}
+                      href={source.url}
                       target="_blank"
                       rel="noreferrer"
                       className="min-h-[32px] inline-flex items-center text-emerald-300 underline underline-offset-2"
                     >
-                      PubMed record
+                      {source.urlLabel}
                     </a>
-                    <a
-                      href={source.doiUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="min-h-[32px] inline-flex items-center text-emerald-300 underline underline-offset-2"
-                    >
-                      DOI
-                    </a>
+                    {source.doiUrl && (
+                      <a
+                        href={source.doiUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="min-h-[32px] inline-flex items-center text-emerald-300 underline underline-offset-2"
+                      >
+                        DOI
+                      </a>
+                    )}
                   </div>
                 </li>
               ))}

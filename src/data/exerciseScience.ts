@@ -1,14 +1,23 @@
 import { ExerciseDefinition } from '../types';
+import {
+  getBackResearchForExercise,
+  getBackResearchSources,
+} from './backExerciseResearch';
+import {
+  getChestResearchForExercise,
+  getChestResearchSources,
+} from './chestExerciseResearch';
 
 export interface ExerciseScienceSource {
   id: string;
   title: string;
-  authors: string;
-  journal: string;
+  authors?: string;
+  journal?: string;
   year: number;
-  doi: string;
-  pubmedUrl: string;
-  doiUrl: string;
+  doi?: string;
+  url: string;
+  urlLabel: string;
+  doiUrl?: string;
 }
 
 export interface ExerciseScienceFact {
@@ -25,7 +34,8 @@ export const EXERCISE_SCIENCE_SOURCES: ExerciseScienceSource[] = [
     journal: 'Journal of Strength and Conditioning Research',
     year: 2017,
     doi: '10.1519/JSC.0000000000002200',
-    pubmedUrl: 'https://pubmed.ncbi.nlm.nih.gov/28834797/',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/28834797/',
+    urlLabel: 'PubMed record',
     doiUrl: 'https://doi.org/10.1519/JSC.0000000000002200',
   },
   {
@@ -36,7 +46,8 @@ export const EXERCISE_SCIENCE_SOURCES: ExerciseScienceSource[] = [
     journal: 'Journal of Sports Sciences',
     year: 2017,
     doi: '10.1080/02640414.2016.1210197',
-    pubmedUrl: 'https://pubmed.ncbi.nlm.nih.gov/27433992/',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/27433992/',
+    urlLabel: 'PubMed record',
     doiUrl: 'https://doi.org/10.1080/02640414.2016.1210197',
   },
 ];
@@ -112,6 +123,66 @@ export interface ExerciseScienceContent {
 export function getExerciseScienceContent(
   exercise: ExerciseDefinition
 ): ExerciseScienceContent {
+  const backResearch = getBackResearchForExercise(exercise.id);
+  if (backResearch) {
+    const sources = getBackResearchSources(backResearch.evidenceRefs).map(
+      (source) => ({
+        id: source.id,
+        title: source.title,
+        year: source.year,
+        doi: source.doi || undefined,
+        url: source.url,
+        urlLabel: source.pmid ? 'PubMed record' : 'Source page',
+        doiUrl: source.doi
+          ? `https://doi.org/${encodeURIComponent(source.doi)}`
+          : undefined,
+      })
+    );
+    return {
+      movementExplanation:
+        MOVEMENT_EXPLANATIONS[exercise.movementPattern] || null,
+      facts: [
+        {
+          text: backResearch.nerdFact,
+          sourceIds: backResearch.evidenceRefs,
+        },
+      ],
+      sources,
+    };
+  }
+
+  const chestResearch = getChestResearchForExercise(exercise.id);
+  if (chestResearch) {
+    const sources = getChestResearchSources(chestResearch.evidenceRefs).map(
+      (source) => ({
+        id: source.id,
+        title: source.title,
+        year: source.year,
+        doi: source.doi || undefined,
+        url: source.url,
+        urlLabel: source.pmid ? 'PubMed record' : 'Source page',
+        doiUrl: source.doi
+          ? `https://doi.org/${source.doi}`
+          : undefined,
+      })
+    );
+    const nerdFact =
+      chestResearch.id === 'chest-press-machine'
+        ? 'A chest-press machine offers a stable alternative to free weights. Choose one that fits and lets you add resistance with control.'
+        : chestResearch.nerdFact.join(' ');
+    return {
+      movementExplanation:
+        MOVEMENT_EXPLANATIONS[exercise.movementPattern] || null,
+      facts: [
+        {
+          text: nerdFact,
+          sourceIds: chestResearch.evidenceRefs,
+        },
+      ],
+      sources,
+    };
+  }
+
   const facts = EXERCISE_SCIENCE_FACTS;
   const sourceIds = new Set(facts.flatMap((fact) => fact.sourceIds));
 
